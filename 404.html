@@ -5,18 +5,18 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Angry Bao</title>
 <meta name="description" content="Angry Bao is a London worldbuilding studio. Building story-driven worlds. Games. Collectibles. Merch. Designed in London. Coming soon.">
-<link rel="icon" href="favicon.svg" type="image/svg+xml">
-<meta name="theme-color" content="#1C2026">
+<meta name="theme-color" content="#070608">
 <meta property="og:title" content="Angry Bao">
 <meta property="og:description" content="Building story-driven worlds. Games. Collectibles. Merch. Designed in London.">
 <meta property="og:url" content="https://angrybao.com/">
 <meta property="og:type" content="website">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&family=Manrope:wght@300;400&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
 :root{
-  --char:#1C2026; --cream:#EFE2D0; --cream-2:rgba(239,226,208,.66); --cream-3:rgba(239,226,208,.42); --hair:rgba(239,226,208,.16);
+  --char:#070608; --cream:#E9DCCB; --cream-2:rgba(233,220,203,.58); --cream-3:rgba(233,220,203,.34); --hair:rgba(233,220,203,.12); --red:#B0122A;
   --wide:"Michroma","Eurostile","Arial Black",sans-serif; --body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
   --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
   --gl:max(20px, env(safe-area-inset-left,0px)); --gr:max(20px, env(safe-area-inset-right,0px));
@@ -29,7 +29,10 @@ body{position:relative;z-index:0;margin:0;background:var(--char);color:var(--cre
 #bg{position:fixed;inset:0;width:100%;height:100%;z-index:-3;display:block}
 #grain{position:fixed;inset:-50%;z-index:-2;pointer-events:none;opacity:.16;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
-#vig{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(10,12,14,.45) 100%)}
+#vig{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(110% 80% at 50% 45%,transparent 35%,rgba(0,0,0,var(--vig,.45)) 100%)}
+#hide{position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:var(--leather,0);mix-blend-mode:soft-light;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='3' seed='7'/><feDiffuseLighting lighting-color='%23fff' surfaceScale='1.6'><feDistantLight azimuth='225' elevation='55'/></feDiffuseLighting></filter><rect width='100%' height='100%' filter='url(%23l)'/></svg>")}
+#scan{position:fixed;left:0;right:0;top:-30%;height:30%;z-index:-1;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(176,18,42,.07) 50%,transparent);animation:scan 11s linear infinite;opacity:var(--scan,0)}
+@keyframes scan{to{transform:translateY(440%)}}
 .mono{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
 .br::before{content:"[\00a0"}.br::after{content:"\00a0]"}
 .page{height:100%;display:grid;grid-template-rows:auto 1fr auto;
@@ -39,7 +42,7 @@ body{position:relative;z-index:0;margin:0;background:var(--char);color:var(--cre
 .mid{display:grid;place-items:center;text-align:center}
 .hero{display:flex;flex-direction:column;align-items:center;gap:clamp(22px,4vh,36px)}
 .mark,.word{filter:drop-shadow(0 2px 14px rgba(10,12,16,.28))}
-.soon p,.top,.bot,.signup .note{text-shadow:0 1px 10px rgba(10,12,16,.35)}
+.soon p,.top,.bot,.signup .note{text-shadow:0 1px 12px rgba(0,0,0,.7)}
 .mark,.word{filter:drop-shadow(0 0 9px rgba(239,226,208,.25))}
 .mark{width:clamp(170px,22vw,280px);height:auto;color:var(--cream);overflow:visible;display:block}
 .eyes{transition:transform .9s cubic-bezier(.2,.8,.2,1)}
@@ -50,29 +53,32 @@ body{position:relative;z-index:0;margin:0;background:var(--char);color:var(--cre
 .soon p.copy{display:grid;gap:clamp(10px,1.6vh,16px);line-height:1.4;margin-top:clamp(6px,1.2vh,12px)}
 .soon p{margin:0;max-width:40ch;color:var(--cream-2);font-weight:300;font-size:clamp(15px,1.4vw,17px);line-height:1.6}
 .pill{display:inline-flex;align-items:center;gap:10px;height:38px;padding:0 18px;border-radius:999px;border:1px solid var(--hair);
-  background:rgba(239,226,208,.07);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);color:var(--cream)}
-.dot{width:6px;height:6px;border-radius:50%;background:var(--cream);animation:pulse 2.4s ease-in-out infinite}
+  background:var(--pill-bg);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);color:var(--cream)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--dot);box-shadow:0 0 8px var(--dot-glow);animation:pulse 2.4s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 .worlds{display:flex;gap:18px;flex-wrap:wrap}
 .signup{display:grid;gap:10px;width:min(420px,100%);justify-items:center}
 .signup-row{display:flex;align-items:center;gap:6px;width:100%;border-radius:999px;padding:5px 5px 5px 20px;border:1px solid var(--hair);
-  background:rgba(239,226,208,.07);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);transition:border-color .2s}
-.signup-row:focus-within{border-color:rgba(239,226,208,.55)}
+  background:var(--pill-bg);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);transition:border-color .2s,box-shadow .2s}
+.signup-row:focus-within{border-color:rgba(176,18,42,.8);box-shadow:0 0 22px rgba(176,18,42,.25)}
 .signup input{flex:1;min-width:0;background:transparent;border:0;color:var(--cream);font:inherit;font-size:15px;padding:10px 0;outline:none}
 .signup input::placeholder{color:var(--cream-3)}
-.signup button{height:42px;padding:0 18px;border-radius:999px;background:var(--cream);color:var(--char);border:0;font-family:var(--wide);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+.signup button{height:42px;padding:0 18px;border-radius:999px;background:var(--btn-bg);color:var(--btn-fg);border:1px solid var(--btn-bd);font-family:var(--wide);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
 .signup button:focus-visible,.signup input:focus-visible{outline:none}
 .signup button:focus-visible{box-shadow:0 0 0 2px var(--char),0 0 0 3.5px var(--cream)}
 .signup .note{min-height:1.4em;color:var(--cream-2);text-align:center}
 .signup .fine{color:var(--cream-3);font-size:10px}
 .signup.done .signup-row{display:none}
 @media (max-width:600px){.bot{flex-direction:column-reverse;gap:8px}.worlds{justify-content:center;gap:12px}.top .loc{display:none}}
-@media (prefers-reduced-motion:reduce){.eyes,.lids{transition:none}.dot{animation:none}}
+@media (prefers-reduced-motion:reduce){.eyes,.lids{transition:none}.dot,#scan{animation:none}#scan{display:none}}
 </style>
 </head>
 <body>
+
 <canvas id="bg" aria-hidden="true"></canvas>
 <div id="grain" aria-hidden="true"></div>
+<div id="hide" aria-hidden="true"></div>
+<div id="scan" aria-hidden="true"></div>
 <div id="vig" aria-hidden="true"></div>
 
 <div class="page">
@@ -115,19 +121,64 @@ body{position:relative;z-index:0;margin:0;background:var(--char);color:var(--cre
 <script>
 (function(){
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  // palette: ground + three lights, from the logo's charcoal, slate, teal and warm grey
-  var P=[[32,34,42]];
-  // wider sweep: sky slate, deep teal, sage, warm tan, dusty plum
-  var S=[[56,138,216],[12,132,144],[78,154,96],[214,130,56],[144,78,180]];
+  var root=document.documentElement;
+  // ---- Themes. The page fades between these over 24 hours, London time. ----
+  var TH={
+    night:{ground:[7,6,8], S:[[120,6,22],[58,8,82],[10,30,66],[160,12,30],[34,28,36]], A:[.7,.4,.22], R:[.62,.5,.35],
+      tint:[255,40,60], tk:.45, H:[.95,.8,.55,.35], logo:[7,6,7], leather:.32, scan:1, vig:.82,
+      pill:[0,0,0,.38], btn:[13,11,12], btnFg:[233,220,203], btnBd:.28, dot:[176,18,42]},
+    sunrise:{ground:[34,26,40], S:[[236,146,118],[214,104,138],[244,190,112],[146,124,196],[104,152,214]], A:[.95,.8,.55], R:[.95,.8,.58],
+      tint:[255,214,186], tk:.3, H:[.55,.45,.3,0], logo:[239,226,208], leather:.08, scan:0, vig:.5,
+      pill:[239,226,208,.08], btn:[239,226,208], btnFg:[28,32,38], btnBd:0, dot:[239,226,208]},
+    day:{ground:[32,34,42], S:[[56,138,216],[12,132,144],[78,154,96],[214,130,56],[144,78,180]], A:[1,.85,.6], R:[1,.85,.6],
+      tint:[255,240,220], tk:.25, H:[.55,.45,.3,0], logo:[239,226,208], leather:0, scan:0, vig:.45,
+      pill:[239,226,208,.07], btn:[239,226,208], btnFg:[28,32,38], btnBd:0, dot:[239,226,208]},
+    sunset:{ground:[24,14,22], S:[[232,108,40],[198,48,62],[168,38,118],[88,40,140],[238,156,58]], A:[.9,.72,.48], R:[.88,.72,.5],
+      tint:[255,168,118], tk:.35, H:[.65,.55,.38,.12], logo:[239,226,208], leather:.16, scan:0, vig:.62,
+      pill:[0,0,0,.22], btn:[239,226,208], btnFg:[28,32,38], btnBd:0, dot:[255,150,80]}
+  };
+  // Hour of day -> theme. Holds between points, fades smoothly across each gap.
+  var SCHED=[[0,'night'],[5,'night'],[6.5,'sunrise'],[8.5,'day'],[16.5,'day'],[18.5,'sunset'],[21,'night'],[24,'night']];
+  function L(a,b,k){return a+(b-a)*k}
+  function mixA(a,b,k){var o=[];for(var i=0;i<a.length;i++)o.push(L(a[i],b[i],k));return o}
+  function mix(a,b,k){return mixA(a,b,k)}
+  function blend(A,B,k){var o={};for(var key in A){var a=A[key],b=B[key];
+      if(typeof a==='number')o[key]=L(a,b,k);
+      else if(typeof a[0]==='number')o[key]=mixA(a,b,k);
+      else o[key]=a.map(function(x,i){return mixA(x,b[i],k)})}return o}
+  function themeAt(h){h=((h%24)+24)%24;
+    for(var i=0;i<SCHED.length-1;i++){var p=SCHED[i],q=SCHED[i+1];
+      if(h>=p[0]&&h<=q[0]){var k=(h-p[0])/(q[0]-p[0]||1);k=k*k*(3-2*k);
+        var t=blend(TH[p[1]],TH[q[1]],k);
+        // the logo flips cream -> black late in the dusk fade, so it never sits at a muddy grey for long
+        if(p[1]!==q[1]&&(q[1]==='night'||p[1]==='night')){var lk=q[1]==='night'?Math.min(1,Math.max(0,(k-.55)/.3)):1-Math.min(1,Math.max(0,((1-k)-.55)/.3));
+          t.logo=mixA(TH[p[1]].logo,TH[q[1]].logo,lk)}
+        return t}}
+    return TH.night}
+  function londonHour(){try{var p=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(new Date());
+    var g=function(n){return +(p.find(function(x){return x.type===n})||{value:0}).value};return g('hour')+g('minute')/60+g('second')/3600}catch(_){var d=new Date();return d.getUTCHours()+d.getUTCMinutes()/60}}
+  function rgba(c,a){return 'rgba('+(c[0]|0)+','+(c[1]|0)+','+(c[2]|0)+','+a+')'}
+  function rgb(c){return 'rgb('+(c[0]|0)+','+(c[1]|0)+','+(c[2]|0)+')'}
+  var override=null; // set to an hour (0-24) to pin a time of day for testing
+  var T=themeAt(londonHour());
+  var stops=document.querySelectorAll('#shM stop,#shW stop'), lastLogo='';
+  function applyUI(){
+    var l=rgb(T.logo);if(l!==lastLogo){lastLogo=l;for(var i=0;i<stops.length;i++)stops[i].setAttribute('stop-color',l)}
+    var st=root.style;
+    st.setProperty('--leather',T.leather.toFixed(3));st.setProperty('--scan',T.scan.toFixed(3));st.setProperty('--vig',T.vig.toFixed(3));
+    st.setProperty('--pill-bg',rgba(T.pill,T.pill[3].toFixed(3)));
+    st.setProperty('--btn-bg',rgb(T.btn));st.setProperty('--btn-fg',rgb(T.btnFg));st.setProperty('--btn-bd','rgba(233,220,203,'+T.btnBd.toFixed(3)+')');
+    st.setProperty('--dot',rgb(T.dot));st.setProperty('--dot-glow',rgba(T.dot,(T.scan*.9).toFixed(3)));
+    var meta=document.querySelector('meta[name=theme-color]');if(meta)meta.setAttribute('content',rgb(T.ground))}
+  function retheme(){T=themeAt(override!=null?override:londonHour());applyUI()}
+  retheme();setInterval(function(){if(override==null)retheme()},20000);
+  // ---- Background ----
   var cv=document.getElementById('bg'),cx=cv.getContext('2d'),W=96,H=60;cv.width=W;cv.height=H;
   var m={x:.5,y:.4},s={x:.5,y:.4},live=false,t0=performance.now();
-  function L(a,b,k){return a+(b-a)*k}
-  function mix(a,b,k){return [L(a[0],b[0],k),L(a[1],b[1],k),L(a[2],b[2],k)]}
-  function rgba(c,a){return 'rgba('+(c[0]|0)+','+(c[1]|0)+','+(c[2]|0)+','+a+')'}
-  function along(k){k=((k%1)+1)%1;var f=k*S.length,i=Math.floor(f)%S.length,j=(i+1)%S.length;var e=f-Math.floor(f);e=e*e*(3-2*e);return mix(S[i],S[j],e)}
+  function along(k){var S=T.S;k=((k%1)+1)%1;var f=k*S.length,i=Math.floor(f)%S.length,j=(i+1)%S.length;var e=f-Math.floor(f);e=e*e*(3-2*e);return mix(S[i],S[j],e)}
   function blob(x,y,r,c,a){var g=cx.createRadialGradient(x*W,y*H,0,x*W,y*H,r*W);g.addColorStop(0,rgba(c,a));g.addColorStop(1,rgba(c,0));cx.fillStyle=g;cx.fillRect(0,0,W,H)}
-  function paint(){var x=s.x,y=s.y;cx.fillStyle=rgba(P[0],1);cx.fillRect(0,0,W,H);
-    blob(x,y,1.0,along(x*.8+y*.35),1);blob(1-x*.7,1.05-y*.5,.85,along(x*.8+y*.35+.4),.85);blob(.08+y*.25,.1+x*.15,.6,along(y*.6+.7),.6);blob(.5,1.3,.85,mix(P[0],[0,0,0],.4),.7)}
+  function paint(){var x=s.x,y=s.y,A=T.A,R=T.R;cx.fillStyle=rgb(T.ground);cx.fillRect(0,0,W,H);
+    blob(x,y,R[0],along(x*.8+y*.35),A[0]);blob(1-x*.7,1.05-y*.5,R[1],along(x*.8+y*.35+.4),A[1]);blob(.08+y*.25,.1+x*.15,R[2],along(y*.6+.7),A[2]);blob(.5,1.3,.85,mix(T.ground,[0,0,0],.4),.7)}
   var eyes=document.getElementById('eyes'),mark=document.getElementById('mark');
   function frame(now){
     if(!live){var t=(now-t0)/1000;m.x=.5+Math.sin(t*.13)*.32;m.y=.42+Math.cos(t*.1)*.24}
@@ -136,6 +187,17 @@ body{position:relative;z-index:0;margin:0;background:var(--char);color:var(--cre
     requestAnimationFrame(frame)}
   addEventListener('pointermove',function(e){if(e.pointerType==='touch')return;live=true;m.x=e.clientX/innerWidth;m.y=e.clientY/innerHeight},{passive:true});
   addEventListener('pointerdown',function(e){live=true;m.x=e.clientX/innerWidth;m.y=e.clientY/innerHeight},{passive:true});
+  function blink(){mark.classList.add('blink');setTimeout(function(){mark.classList.remove('blink')},150);setTimeout(blink,3200+Math.random()*4200)}
+  paint();
+  // ---- Halation: the logo glows with the background colour; at night it becomes a strong red outer glow ----
+  var mk=document.getElementById('mark'),wd=document.querySelector('.word');
+  function halo(){
+    var c=mix(along(s.x*.8+s.y*.35),T.tint,T.tk),H=T.H;
+    var f='drop-shadow(0 0 1.5px '+rgba(c,H[0].toFixed(3))+') drop-shadow(0 0 7px '+rgba(c,H[1].toFixed(3))+') drop-shadow(0 0 22px '+rgba(c,H[2].toFixed(3))+')'+(H[3]>.01?' drop-shadow(0 0 44px '+rgba(c,H[3].toFixed(3))+')':'');
+    mk.style.filter=f; wd.style.filter=f;
+    requestAnimationFrame(halo)}
+  if(!reduce){requestAnimationFrame(halo);requestAnimationFrame(frame);setTimeout(blink,2600)}
+  else {var c0=mix(along(.6),T.tint,T.tk);mk.style.filter=wd.style.filter='drop-shadow(0 0 8px '+rgba(c0,T.H[1])+')'}
   // Phone tilt: on phones with motion sensors, tilting the phone moves the light the way the cursor does.
   var base=null;
   function onTilt(e){
@@ -180,7 +242,7 @@ body{position:relative;z-index:0;margin:0;background:var(--char);color:var(--cre
   f.addEventListener('submit',function(e){
     if(!em.value || !em.checkValidity()){ e.preventDefault(); note.textContent='Please enter a valid email address.'; em.focus(); return }
     if(!SIGNUP_URL){ e.preventDefault(); note.textContent='Sign-ups open very soon. Please check back.'; return }
-    f.action=SIGNUP_URL; // posts into the hidden frame, so the visitor stays on the page
+    f.action=SIGNUP_URL;
     setTimeout(function(){ f.classList.add('done'); note.textContent='Thanks. You will hear from us when we launch.' },300);
   });
   var c=document.getElementById('clock');
