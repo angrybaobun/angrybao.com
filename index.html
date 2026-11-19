@@ -310,7 +310,7 @@ body.intro .hero{transform:scale(.86)}
     addEventListener('keydown',function k(e){ if(e.key==='Escape'){ removeEventListener('keydown',k); document.body.classList.remove('intro'); I.classList.add('gone'); setTimeout(function(){I.remove()},1000) } });
   })();
   // Email sign-up. Set SIGNUP_URL to the mailing-list provider's form address to start collecting.
-  var SIGNUP_URL = '';
+  var SIGNUP_URL = 'https://app.kit.com/forms/10214414/subscriptions';
   var f=document.getElementById('signup'), note=document.getElementById('signup-note'), em=document.getElementById('signup-email');
   f.addEventListener('submit',function(e){
     if(!em.value || !em.checkValidity()){ e.preventDefault(); note.textContent='Please enter a valid email address.'; em.focus(); return }
