@@ -224,18 +224,6 @@ body{position:relative;z-index:0;margin:0;background:var(--char);color:var(--cre
       },{passive:true});
     }
   }
-  function blink(){mark.classList.add('blink');setTimeout(function(){mark.classList.remove('blink')},150);setTimeout(blink,3200+Math.random()*4200)}
-  paint();
-  // Halation: the cream logo glows softly, picking up the background colour under the cursor.
-  var mk=document.getElementById('mark'),wd=document.querySelector('.word');
-  function rgba(c,a){return 'rgba('+(c[0]|0)+','+(c[1]|0)+','+(c[2]|0)+','+a+')'}
-  function halo(){
-    var c=mix(along(s.x*.8+s.y*.35),[255,240,220],.25);
-    var f='drop-shadow(0 0 2px '+rgba(c,.55)+') drop-shadow(0 0 9px '+rgba(c,.45)+') drop-shadow(0 0 26px '+rgba(c,.3)+')';
-    mk.style.filter=f; wd.style.filter=f;
-    requestAnimationFrame(halo)}
-  if(!reduce) requestAnimationFrame(halo);
-  if(!reduce){requestAnimationFrame(frame);setTimeout(blink,2600)}
   // Email sign-up. Set SIGNUP_URL to the mailing-list provider's form address to start collecting.
   var SIGNUP_URL = '';
   var f=document.getElementById('signup'), note=document.getElementById('signup-note'), em=document.getElementById('signup-email');
