@@ -7,11 +7,13 @@ It is plain HTML, CSS and JavaScript with no build step, so the repository root 
 
 ## Hosting
 
-Hosted on Cloudflare Pages, connected to this repository. Every push to `main` deploys automatically.
+Hosted on Netlify, connected to this repository. Every push to `main` deploys automatically.
 
 - Build command: none
-- Output directory: `/` (repository root)
+- Publish directory: repository root (see `netlify.toml`)
 - `_headers` sets basic security headers.
+- This repository is public on purpose: it holds only the public website. Never commit secrets,
+  API keys or unreleased material here.
 
 ## Email sign-up
 
