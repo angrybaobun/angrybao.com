@@ -136,6 +136,32 @@ body{position:relative;z-index:0;margin:0;background:var(--char);color:var(--cre
     requestAnimationFrame(frame)}
   addEventListener('pointermove',function(e){if(e.pointerType==='touch')return;live=true;m.x=e.clientX/innerWidth;m.y=e.clientY/innerHeight},{passive:true});
   addEventListener('pointerdown',function(e){live=true;m.x=e.clientX/innerWidth;m.y=e.clientY/innerHeight},{passive:true});
+  // Phone tilt: on phones with motion sensors, tilting the phone moves the light the way the cursor does.
+  var base=null;
+  function onTilt(e){
+    if(e.gamma==null||e.beta==null) return;
+    var ang=(screen.orientation&&screen.orientation.angle)||window.orientation||0;
+    var lr=e.gamma, fb=e.beta;
+    if(ang===90){lr=e.beta;fb=-e.gamma} else if(ang===-90||ang===270){lr=-e.beta;fb=e.gamma}
+    if(!base) base={lr:lr,fb:fb};
+    base.lr+=(lr-base.lr)*.004; base.fb+=(fb-base.fb)*.004;   // slowly re-centre on how the phone is held
+    var gx=Math.max(-1,Math.min(1,(lr-base.lr)/25)), gy=Math.max(-1,Math.min(1,(fb-base.fb)/25));
+    live=true; m.x=.5+gx*.5; m.y=.5+gy*.5;
+  }
+  function startTilt(){ addEventListener('deviceorientation',onTilt,{passive:true}) }
+  if(!reduce && window.DeviceOrientationEvent && matchMedia('(pointer: coarse)').matches){
+    startTilt();
+    // iPhone only shares tilt after the visitor allows it, and can only ask after a tap,
+    // so the first tap anywhere on the page (outside the sign-up form) asks once.
+    if(typeof DeviceOrientationEvent.requestPermission==='function'){
+      var asked=false;
+      addEventListener('touchend',function ask(e){
+        if(asked || base || (e.target.closest && e.target.closest('form'))) return;
+        asked=true; removeEventListener('touchend',ask);
+        DeviceOrientationEvent.requestPermission().catch(function(){});
+      },{passive:true});
+    }
+  }
   function blink(){mark.classList.add('blink');setTimeout(function(){mark.classList.remove('blink')},150);setTimeout(blink,3200+Math.random()*4200)}
   paint();
   // Halation: the cream logo glows softly, picking up the background colour under the cursor.
