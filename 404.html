@@ -34,6 +34,7 @@ body{position:relative;z-index:0;margin:0;background:var(--char);color:var(--cre
 .br::before{content:"[\00a0"}.br::after{content:"\00a0]"}
 .page{height:100%;display:grid;grid-template-rows:auto 1fr auto;
   padding:calc(20px + env(safe-area-inset-top,0px)) var(--gr) calc(20px + env(safe-area-inset-bottom,0px)) var(--gl)}
+.tilt{font:inherit;letter-spacing:inherit;text-transform:inherit;color:var(--cream);background:rgba(239,226,208,.1);border:1px solid var(--hair);border-radius:999px;padding:6px 12px;cursor:pointer}
 .top,.bot{display:flex;justify-content:space-between;align-items:center;gap:16px;color:var(--cream-2)}
 .top b{color:var(--cream);font-weight:500;font-variant-numeric:tabular-nums}
 .mid{display:grid;place-items:center;text-align:center}
@@ -79,6 +80,7 @@ body{position:relative;z-index:0;margin:0;background:var(--char);color:var(--cre
   <header class="top mono">
     <span class="br">Worldbuilding studio</span>
     <span class="br loc" aria-label="Time in London">London <b id="clock"></b></span>
+    <button class="tilt" id="tilt" type="button" hidden>Tap to tilt</button>
   </header>
 
   <main class="mid">
@@ -136,6 +138,31 @@ body{position:relative;z-index:0;margin:0;background:var(--char);color:var(--cre
     requestAnimationFrame(frame)}
   addEventListener('pointermove',function(e){if(e.pointerType==='touch')return;live=true;m.x=e.clientX/innerWidth;m.y=e.clientY/innerHeight},{passive:true});
   addEventListener('pointerdown',function(e){live=true;m.x=e.clientX/innerWidth;m.y=e.clientY/innerHeight},{passive:true});
+  // Phone tilt: on phones with motion sensors, tilting the phone moves the light the way the cursor does.
+  var base=null;
+  function onTilt(e){
+    if(e.gamma==null||e.beta==null) return;
+    var ang=(screen.orientation&&screen.orientation.angle)||window.orientation||0;
+    var lr=e.gamma, fb=e.beta;
+    if(ang===90){lr=e.beta;fb=-e.gamma} else if(ang===-90||ang===270){lr=-e.beta;fb=e.gamma}
+    if(!base) base={lr:lr,fb:fb};
+    base.lr+=(lr-base.lr)*.004; base.fb+=(fb-base.fb)*.004;   // slowly re-centre on how the phone is held
+    var gx=Math.max(-1,Math.min(1,(lr-base.lr)/25)), gy=Math.max(-1,Math.min(1,(fb-base.fb)/25));
+    live=true; m.x=.5+gx*.5; m.y=.5+gy*.5;
+  }
+  function startTilt(){ addEventListener('deviceorientation',onTilt,{passive:true}) }
+  var tiltBtn=document.getElementById('tilt');
+  if(!reduce && window.DeviceOrientationEvent && matchMedia('(pointer: coarse)').matches){
+    startTilt();
+    // iPhone sends no tilt data until the visitor allows it, so offer a button only if nothing arrives.
+    setTimeout(function(){
+      if(base || typeof DeviceOrientationEvent.requestPermission!=='function') return;
+      tiltBtn.hidden=false;
+      tiltBtn.addEventListener('click',function(){
+        DeviceOrientationEvent.requestPermission().then(function(){ tiltBtn.hidden=true }).catch(function(){ tiltBtn.hidden=true });
+      });
+    },1500);
+  }
   function blink(){mark.classList.add('blink');setTimeout(function(){mark.classList.remove('blink')},150);setTimeout(blink,3200+Math.random()*4200)}
   paint();
   // Halation: the cream logo glows softly, picking up the background colour under the cursor.
