@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Angry Bao</title>
+<meta name="description" content="Angry Bao is a London worldbuilding studio. Building story-driven worlds. Games. Collectibles. Merch. Designed in London. Coming soon.">
+<meta name="theme-color" content="#1C2026">
+<meta property="og:title" content="Angry Bao">
+<meta property="og:description" content="Building story-driven worlds. Games. Collectibles. Merch. Designed in London.">
+<meta property="og:url" content="https://angrybao.com/">
+<meta property="og:type" content="website">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&family=Manrope:wght@300;400&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --char:#1C2026; --cream:#EFE2D0; --cream-2:rgba(239,226,208,.66); --cream-3:rgba(239,226,208,.42); --hair:rgba(239,226,208,.16);
+  --wide:"Michroma","Eurostile","Arial Black",sans-serif; --body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --gl:max(20px, env(safe-area-inset-left,0px)); --gr:max(20px, env(safe-area-inset-right,0px));
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+html{background:var(--char)}
+body{position:relative;z-index:0;margin:0;background:var(--char);color:var(--cream);font-family:var(--body);-webkit-font-smoothing:antialiased;overflow:hidden}
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:-3;display:block}
+#grain{position:fixed;inset:-50%;z-index:-2;pointer-events:none;opacity:.16;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+#vig{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(10,12,14,.45) 100%)}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.br::before{content:"[\00a0"}.br::after{content:"\00a0]"}
+.page{height:100%;display:grid;grid-template-rows:auto 1fr auto;
+  padding:calc(20px + env(safe-area-inset-top,0px)) var(--gr) calc(20px + env(safe-area-inset-bottom,0px)) var(--gl)}
+.top,.bot{display:flex;justify-content:space-between;align-items:center;gap:16px;color:var(--cream-2)}
+.top b{color:var(--cream);font-weight:500;font-variant-numeric:tabular-nums}
+.mid{display:grid;place-items:center;text-align:center}
+.hero{display:flex;flex-direction:column;align-items:center;gap:clamp(22px,4vh,36px)}
+.mark{width:clamp(170px,22vw,280px);height:auto;color:var(--cream);overflow:visible;display:block}
+.eyes{transition:transform .9s cubic-bezier(.2,.8,.2,1)}
+.lids{transform-box:fill-box;transform-origin:50% 50%;transition:transform .12s ease}
+.mark.blink .lids{transform:scaleY(.08)}
+.word{width:clamp(240px,32vw,420px);height:auto;color:var(--cream);display:block}
+.soon{display:grid;gap:14px;justify-items:center}
+.soon p.copy{display:grid;gap:clamp(10px,1.6vh,16px);line-height:1.4;margin-top:clamp(6px,1.2vh,12px)}
+.soon p{margin:0;max-width:40ch;color:var(--cream-2);font-weight:300;font-size:clamp(15px,1.4vw,17px);line-height:1.6}
+.pill{display:inline-flex;align-items:center;gap:10px;height:38px;padding:0 18px;border-radius:999px;border:1px solid var(--hair);
+  background:rgba(239,226,208,.07);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);color:var(--cream)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--cream);animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.worlds{display:flex;gap:18px;flex-wrap:wrap}
+.signup{display:grid;gap:10px;width:min(420px,100%);justify-items:center}
+.signup-row{display:flex;align-items:center;gap:6px;width:100%;border-radius:999px;padding:5px 5px 5px 20px;border:1px solid var(--hair);
+  background:rgba(239,226,208,.07);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);transition:border-color .2s}
+.signup-row:focus-within{border-color:rgba(239,226,208,.55)}
+.signup input{flex:1;min-width:0;background:transparent;border:0;color:var(--cream);font:inherit;font-size:15px;padding:10px 0;outline:none}
+.signup input::placeholder{color:var(--cream-3)}
+.signup button{height:42px;padding:0 18px;border-radius:999px;background:var(--cream);color:var(--char);border:0;font-family:var(--wide);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+.signup button:focus-visible,.signup input:focus-visible{outline:none}
+.signup button:focus-visible{box-shadow:0 0 0 2px var(--char),0 0 0 3.5px var(--cream)}
+.signup .note{min-height:1.4em;color:var(--cream-2);text-align:center}
+.signup .fine{color:var(--cream-3);font-size:10px}
+.signup.done .signup-row{display:none}
+@media (max-width:600px){.bot{flex-direction:column-reverse;gap:8px}.worlds{justify-content:center;gap:12px}.top .loc{display:none}}
+@media (prefers-reduced-motion:reduce){.eyes,.lids{transition:none}.dot{animation:none}}
+</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<div id="grain" aria-hidden="true"></div>
+<div id="vig" aria-hidden="true"></div>
+
+<div class="page">
+  <header class="top mono">
+    <span class="br">Worldbuilding studio</span>
+    <span class="br loc" aria-label="Time in London">London <b id="clock"></b></span>
+  </header>
+
+  <main class="mid">
+    <div class="hero">
+      <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Angry Bao</h1>
+      <svg class="mark" id="mark" viewBox="20 14 978 636" role="img" aria-label="The Angry Bao mark">
+        <path fill="currentColor" fill-rule="evenodd" d="M766 637L850 636L861 633C876 629 884 626 895 620C921 606 945 582 958 555C978 516 986 481 986 436C986 399 981 368 967 330C954 293 934 256 908 224C879 189 841 154 800 127C770 107 744 95 702 79C688 74 676 68 666 60C642 42 620 31 595 26C581 23 567 24 544 28C521 33 507 33 482 28C455 22 437 23 413 30C394 35 386 39 366 52C343 67 339 69 314 76C296 81 259 98 231 114C156 156 94 219 59 288C51 306 46 318 41 336C31 370 28 400 32 432C38 485 59 538 90 576C115 607 142 624 184 635C190 636 217 636 403 637C520 637 630 637 648 637C667 637 719 637 766 637ZM197 603C180 601 156 591 141 581C132 574 111 552 106 544C104 541 100 534 98 530C92 520 78 490 74 477C66 451 64 432 64 406C64 379 67 359 75 334C82 314 100 280 113 262C117 256 135 233 137 232C137 232 142 227 146 222C166 201 188 183 212 165C254 135 290 117 333 105C340 103 348 101 350 100C353 99 362 93 371 87C391 74 398 70 411 65C424 60 429 58 442 57C455 56 466 57 480 61C494 64 502 65 517 65C526 64 534 63 542 62C561 58 567 57 579 57C601 59 619 66 653 89C670 101 681 106 707 116C741 128 787 156 822 185C834 195 862 222 871 232C880 243 895 264 902 274C913 292 915 295 922 308C938 341 948 375 952 410C959 462 946 521 922 553C910 568 893 584 880 591C873 594 855 601 846 602C841 604 785 604 522 604C347 604 201 603 197 603Z"/>
+        <path fill="currentColor" d="M274 260C291 240 316 218 338 205C341 203 354 196 366 190C379 184 393 176 400 172C422 157 439 135 449 110C451 106 454 96 454 94C454 93 452 95 445 103C436 113 418 129 407 136C402 139 385 148 370 156C333 174 326 179 309 195C296 209 288 219 279 236C271 251 263 271 266 271C266 271 270 266 274 260ZM769 270C759 247 752 233 745 223C729 199 705 179 678 166C638 148 622 137 603 118C595 111 588 103 586 100C583 95 579 93 580 97C589 126 599 142 619 162C632 173 642 180 671 195C707 213 714 218 733 235C744 244 753 254 763 266C767 271 770 273 769 270Z"/>
+        <g class="eyes" id="eyes"><g class="lids"><path fill="currentColor" d="M402 483C422 479 441 472 445 466C449 462 449 457 446 455C443 453 422 445 409 440C405 439 393 435 384 431C374 427 361 423 356 420C340 415 277 389 268 385C251 378 247 377 241 380C235 383 233 392 237 402C241 411 251 425 264 438C286 462 320 480 352 485C364 487 388 486 402 483ZM691 484C720 477 748 462 768 442C786 424 798 405 799 392C799 386 799 385 796 382C794 380 792 379 790 378C785 378 782 379 760 389C741 397 711 410 698 415C692 417 684 420 680 422C675 424 668 426 664 428C659 430 648 434 639 437C630 440 620 444 616 445C613 446 607 448 603 450C580 458 586 469 619 479C634 485 645 486 666 486C677 485 686 485 691 484Z"/></g></g>
+      </svg>
+      <svg class="word" viewBox="30 26 2306 94" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M2158 115C2174 110 2190 98 2194 86C2197 78 2197 68 2194 60C2190 50 2175 38 2160 33C2134 25 2101 31 2084 47C2077 55 2074 59 2073 69C2071 83 2075 94 2087 102C2095 109 2108 114 2119 116C2127 117 2152 116 2158 115ZM669 113C679 110 679 110 680 113C680 116 682 116 688 115L693 114L693 91L693 69L686 69C682 69 669 69 656 69L634 69L634 76L634 84L653 84L672 84L672 88C672 92 672 93 669 94C663 97 654 98 640 98C624 98 617 97 609 92C602 87 599 83 598 76C597 62 608 51 626 48C635 46 653 47 660 50C669 53 678 58 680 61C681 62 682 63 682 63C684 63 685 60 686 50L686 41L679 38C666 31 658 30 639 30C623 30 622 30 614 32C602 37 596 40 589 46C580 55 579 60 579 74C579 83 579 85 581 89C585 98 597 108 608 112C618 115 624 116 643 116C658 115 663 115 669 113ZM1923 115C1923 114 1922 113 1921 112C1920 111 1914 100 1907 88C1900 77 1889 60 1883 50L1872 32L1861 32L1850 32L1845 40C1838 53 1827 69 1812 92C1804 103 1798 113 1798 114C1798 115 1802 115 1808 115L1819 115L1824 107L1830 99L1860 99L1890 100L1895 106C1901 116 1900 116 1912 115C1918 115 1922 115 1923 115ZM63 107L68 100L97 99L127 99L132 107L137 115L149 115C156 115 161 115 161 114C161 114 158 109 155 104C147 92 141 83 123 54L109 32L98 32L86 32L84 36C83 39 78 47 73 54C67 62 60 74 55 82C50 89 44 99 40 104C37 109 34 114 34 114C34 115 39 115 46 115L58 115L63 107ZM330 85C330 69 330 56 331 56C332 56 341 64 363 83C370 89 381 98 388 104L400 115L412 115L422 114L423 73L423 32L412 32L402 32L402 62C402 78 402 91 402 92C401 92 397 89 393 85C389 81 382 74 377 70C372 66 360 56 350 48L332 32L320 32L308 32L308 72C308 94 308 113 308 114C309 115 312 115 319 115L330 114L330 85ZM873 101L874 88L893 87L912 87L918 93C920 97 926 103 930 107L937 115L951 115C958 115 964 115 964 114C964 114 960 110 955 104C943 92 937 85 937 85C937 84 940 83 943 81C951 78 955 73 957 66C959 61 959 56 957 50C955 45 947 38 941 35L936 32L894 32C871 32 852 33 852 33C852 34 852 52 852 74L852 115L862 115L873 115L873 101ZM1183 99L1183 83L1208 58C1222 45 1233 33 1233 33C1233 32 1227 32 1220 32L1207 32L1196 44C1190 50 1182 58 1178 62L1172 68L1167 63C1164 60 1156 52 1149 45L1137 32L1124 32C1117 32 1111 32 1111 33C1111 33 1122 45 1136 58L1161 83L1161 99L1161 115L1172 115L1183 115L1183 99ZM1632 113C1643 110 1649 102 1649 91C1649 84 1648 81 1644 76C1641 73 1641 73 1642 71C1645 66 1646 63 1646 57C1646 46 1643 40 1633 35L1628 32L1584 32L1542 32L1541 73C1541 95 1541 114 1542 114C1542 115 1561 115 1584 115C1619 115 1628 115 1632 113ZM1571 98L1561 98L1560 90C1560 85 1560 82 1561 82C1562 81 1576 81 1594 81C1625 81 1626 81 1628 83C1632 87 1630 95 1623 98C1620 99 1593 99 1571 98ZM2118 96C2100 92 2093 83 2096 69C2097 64 2098 63 2102 59C2108 53 2112 51 2121 50C2130 48 2138 48 2147 49C2165 53 2174 61 2174 74C2174 90 2160 98 2134 98C2128 98 2120 97 2118 96ZM78 83C77 82 79 79 82 75C84 71 89 64 92 59C95 54 98 50 98 50C99 50 100 51 101 53C102 54 106 62 110 69C114 76 118 83 117 83C117 84 78 84 78 83ZM1841 83C1841 81 1860 51 1861 51C1862 51 1865 54 1867 59C1870 64 1874 71 1877 75C1880 79 1882 83 1881 83C1881 84 1872 84 1861 84C1846 84 1841 84 1841 83ZM875 70C874 70 874 55 874 50C874 50 882 49 902 49C926 50 931 50 934 51C942 55 940 65 931 69C927 70 876 72 875 70ZM1561 64C1560 64 1560 60 1560 56L1560 50L1589 49C1605 49 1620 49 1621 50C1628 51 1630 61 1624 64C1621 65 1562 66 1561 64ZM2284 47L2284 36L2288 36C2291 36 2292 36 2292 34C2292 32 2291 32 2281 32C2272 32 2270 33 2270 34C2270 35 2271 36 2273 36L2277 36L2277 46C2277 52 2277 57 2278 57C2278 58 2280 58 2281 58C2283 58 2284 57 2284 47ZM2306 51C2306 47 2306 44 2306 43C2307 43 2308 44 2309 47C2313 57 2313 58 2316 58C2318 58 2319 57 2322 49C2323 45 2325 42 2325 42C2326 42 2326 45 2326 50C2326 57 2327 58 2329 58L2332 58L2332 45L2332 32L2327 32C2323 32 2323 33 2322 35C2320 42 2317 48 2316 49C2315 49 2315 48 2314 47C2314 46 2313 42 2311 39L2309 32L2304 32L2300 32L2300 45L2300 58L2303 58C2305 58 2306 57 2306 51Z"/></svg>
+      <div class="soon">
+        <span class="pill mono"><span class="dot" aria-hidden="true"></span>Coming soon</span>
+        <p class="copy"><span>Building story-driven worlds.</span><span>Games. Collectibles. Merch.</span><span style="color:var(--cream-3)">Designed in London.</span></p>
+      </div>
+      <form class="signup" id="signup" method="post" target="signup-sink" novalidate>
+        <label for="signup-email" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Email address</label>
+        <div class="signup-row">
+          <input id="signup-email" name="email_address" type="email" placeholder="Your email" autocomplete="email" required>
+          <button type="submit">Notify me</button>
+        </div>
+        <div class="note mono" id="signup-note" aria-live="polite"><span class="fine">One email when we launch. Unsubscribe any time.</span></div>
+      </form>
+      <iframe name="signup-sink" title="Sign-up" hidden></iframe>
+    </div>
+  </main>
+
+  <footer class="bot mono">
+    <span>© 2026 Angry Bao</span>
+    <span class="worlds"><span style="color:var(--cream-3)">Now building</span><span class="br">Dead of Knight</span><span class="br">Evergreen</span><span class="br">Triple Six</span></span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // palette: ground + three lights, from the logo's charcoal, slate, teal and warm grey
+  var P=[[28,32,38],[76,96,112],[36,74,84],[140,121,104]];
+  var cv=document.getElementById('bg'),cx=cv.getContext('2d'),W=96,H=60;cv.width=W;cv.height=H;
+  var m={x:.5,y:.4},s={x:.5,y:.4},live=false,t0=performance.now();
+  function L(a,b,k){return a+(b-a)*k}
+  function mix(a,b,k){return [L(a[0],b[0],k),L(a[1],b[1],k),L(a[2],b[2],k)]}
+  function rgba(c,a){return 'rgba('+(c[0]|0)+','+(c[1]|0)+','+(c[2]|0)+','+a+')'}
+  function along(k){k=Math.max(0,Math.min(1,k));return k<.5?mix(P[1],P[2],k*2):mix(P[2],P[3],(k-.5)*2)}
+  function blob(x,y,r,c,a){var g=cx.createRadialGradient(x*W,y*H,0,x*W,y*H,r*W);g.addColorStop(0,rgba(c,a));g.addColorStop(1,rgba(c,0));cx.fillStyle=g;cx.fillRect(0,0,W,H)}
+  function paint(){var x=s.x,y=s.y;cx.fillStyle=rgba(P[0],1);cx.fillRect(0,0,W,H);
+    blob(x,y,.95,along(x),.95);blob(1-x*.7,1.05-y*.5,.8,along(1-x),.7);blob(.08+y*.25,.1+x*.15,.55,along(y),.45);blob(.5,1.25,.9,mix(P[0],[0,0,0],.4),.85)}
+  var eyes=document.getElementById('eyes'),mark=document.getElementById('mark');
+  function frame(now){
+    if(!live){var t=(now-t0)/1000;m.x=.5+Math.sin(t*.13)*.32;m.y=.42+Math.cos(t*.1)*.24}
+    s.x+=(m.x-s.x)*.05;s.y+=(m.y-s.y)*.05;paint();
+    eyes.style.transform='translate('+((s.x-.5)*32).toFixed(1)+'px,'+((s.y-.5)*20).toFixed(1)+'px)';
+    requestAnimationFrame(frame)}
+  addEventListener('pointermove',function(e){if(e.pointerType==='touch')return;live=true;m.x=e.clientX/innerWidth;m.y=e.clientY/innerHeight},{passive:true});
+  addEventListener('pointerdown',function(e){live=true;m.x=e.clientX/innerWidth;m.y=e.clientY/innerHeight},{passive:true});
+  function blink(){mark.classList.add('blink');setTimeout(function(){mark.classList.remove('blink')},150);setTimeout(blink,3200+Math.random()*4200)}
+  paint();
+  if(!reduce){requestAnimationFrame(frame);setTimeout(blink,2600)}
+  // Email sign-up. Set SIGNUP_URL to the mailing-list provider's form address to start collecting.
+  var SIGNUP_URL = '';
+  var f=document.getElementById('signup'), note=document.getElementById('signup-note'), em=document.getElementById('signup-email');
+  f.addEventListener('submit',function(e){
+    if(!em.value || !em.checkValidity()){ e.preventDefault(); note.textContent='Please enter a valid email address.'; em.focus(); return }
+    if(!SIGNUP_URL){ e.preventDefault(); note.textContent='Sign-ups open very soon. Please check back.'; return }
+    f.action=SIGNUP_URL; // posts into the hidden frame, so the visitor stays on the page
+    setTimeout(function(){ f.classList.add('done'); note.textContent='Thanks. You will hear from us when we launch.' },300);
+  });
+  var c=document.getElementById('clock');
+  function tick(){try{var d=new Date();
+    var t=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit'}).format(d);
+    var z=(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',timeZoneName:'short'}).formatToParts(d).find(function(p){return p.type==='timeZoneName'})||{}).value||'';
+    c.textContent=t+' '+z}catch(_){}}
+  tick();setInterval(tick,15000);
+})();
+</script>
+</body>
+</html>
