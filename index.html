@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Angry Bao</title>
-<meta name="description" content="Angry Bao is a London worldbuilding studio. Building story-driven worlds. Games. Collectibles. Merch. Coming soon.">
+<meta name="description" content="Angry Bao is an independent worldbuilding studio. We build story-driven worlds, then make games, collectibles and merch from them.">
 <meta name="theme-color" content="#070608">
 <meta property="og:title" content="Angry Bao">
 <meta property="og:description" content="Building story-driven worlds. Games. Collectibles. Merch.">
@@ -21,159 +21,587 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&family=Manrope:wght@300;400&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Michroma&family=Manrope:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
+/* Layout: one living, cursor-lit ground. Each view is a "stage": the subject floats in the centre,
+   a thumbnail strip sits bottom-left and a glass info card bottom-right. Longer pages scroll below the stage. */
 :root{
-  --char:#070608; --cream:#E9DCCB; --cream-2:rgba(233,220,203,.58); --cream-3:rgba(233,220,203,.34); --hair:rgba(233,220,203,.12); --red:#B0122A;
-  --wide:"Michroma","Eurostile","Arial Black",sans-serif; --body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
-  --gl:max(20px, env(safe-area-inset-left,0px)); --gr:max(20px, env(safe-area-inset-right,0px));
+  --char:#1C2026;          /* charcoal ground, from the logo */
+  --ink:#14171B;           /* text on cream */
+  --cream:#EFE2D0;         /* line art and text */
+  --cream-2:rgba(239,226,208,.66);
+  --cream-3:rgba(239,226,208,.42);
+  --hair:rgba(239,226,208,.16);
+  --glass:rgba(239,226,208,.07);
+  --glass-2:rgba(20,23,27,.28);
+  --wide:"Michroma","Eurostile","Microgramma","Arial Black",sans-serif;
+  --body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
+  --gut-l:max(16px, env(safe-area-inset-left,0px));
+  --gut-r:max(16px, env(safe-area-inset-right,0px));
+  --head:76px;
   color-scheme:dark;
 }
+@media (min-width:720px){:root{--gut-l:max(24px, env(safe-area-inset-left,0px));--gut-r:max(24px, env(safe-area-inset-right,0px))}}
 *{box-sizing:border-box}
-html,body{height:100%}
 html{background:var(--char)}
-body{position:relative;z-index:0;margin:0;background:var(--char);color:var(--cream);font-family:var(--body);-webkit-font-smoothing:antialiased;overflow:hidden}
-#bg{position:fixed;inset:0;width:100%;height:100%;z-index:-3;display:block}
+body{position:relative;z-index:0;margin:0;background:var(--char);color:var(--cream);font-family:var(--body);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--char)}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:1.5px solid var(--cream);outline-offset:3px;border-radius:999px}
+h1,h2,h3{font-weight:400;margin:0;text-wrap:balance}
+p{margin:0}
+.sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- living ground ---------- */
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:-3;display:block;background:var(--char)}
 #grain{position:fixed;inset:-50%;z-index:-2;pointer-events:none;opacity:.16;mix-blend-mode:overlay;
   background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
-#vig{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(110% 80% at 50% 45%,transparent 35%,rgba(0,0,0,var(--vig,.45)) 100%)}
+#vignette{position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(110% 80% at 50% 45%,transparent 35%,rgba(0,0,0,var(--vig,.45)) 100%)}
 #hide{position:fixed;inset:0;z-index:-2;pointer-events:none;opacity:var(--leather,0);mix-blend-mode:soft-light;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='l'><feTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='3' seed='7'/><feDiffuseLighting lighting-color='%23fff' surfaceScale='1.6'><feDistantLight azimuth='225' elevation='55'/></feDiffuseLighting></filter><rect width='100%' height='100%' filter='url(%23l)'/></svg>")}
 #scan{position:fixed;left:0;right:0;top:-30%;height:30%;z-index:-1;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(176,18,42,.07) 50%,transparent);animation:scan 11s linear infinite;opacity:var(--scan,0)}
 @keyframes scan{to{transform:translateY(440%)}}
-.mono{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+/* logo colour and glow follow the time of day (cream by day, black with a red glow at night) */
+.hero-mark,.hero-word{color:var(--logo,#EFE2D0)!important}
+@media (prefers-reduced-motion:reduce){#scan{display:none}}
+
+/* ---------- type atoms ---------- */
+.wide{font-family:var(--wide);text-transform:uppercase;letter-spacing:.32em}
+.mono{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
 .br::before{content:"[\00a0"}.br::after{content:"\00a0]"}
-.page{height:100%;display:grid;grid-template-rows:auto 1fr auto;
-  padding:calc(20px + env(safe-area-inset-top,0px)) var(--gr) calc(20px + env(safe-area-inset-bottom,0px)) var(--gl)}
-.top,.bot{display:flex;justify-content:space-between;align-items:center;gap:16px;color:var(--cream-2)}
-.top b{color:var(--cream);font-weight:500;font-variant-numeric:tabular-nums}
-.mid{display:grid;place-items:center;text-align:center}
-.hero{display:flex;flex-direction:column;align-items:center;gap:clamp(22px,4vh,36px)}
-.mark,.word{filter:drop-shadow(0 2px 14px rgba(10,12,16,.28))}
-.soon p,.top,.bot,.signup .note{text-shadow:0 1px 12px rgba(0,0,0,.7)}
-.mark,.word{filter:drop-shadow(0 0 9px rgba(239,226,208,.25))}
-.mark{width:clamp(170px,22vw,280px);height:auto;color:var(--cream);overflow:visible;display:block}
-.eyes{transition:transform .9s cubic-bezier(.2,.8,.2,1)}
-.lids{transform-box:fill-box;transform-origin:50% 50%;transition:transform .12s ease}
-.mark.blink .lids{transform:scaleY(.08)}
-.word{width:clamp(240px,32vw,420px);height:auto;color:var(--cream);display:block}
-.soon{display:grid;gap:14px;justify-items:center}
-.soon p.copy{display:grid;gap:clamp(10px,1.6vh,16px);line-height:1.4;margin-top:clamp(6px,1.2vh,12px)}
-.soon p{margin:0;max-width:40ch;color:var(--cream-2);font-weight:300;font-size:clamp(15px,1.4vw,17px);line-height:1.6}
-.pill{display:inline-flex;align-items:center;gap:10px;height:38px;padding:0 18px;border-radius:999px;border:1px solid var(--hair);
-  background:var(--pill-bg);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);color:var(--cream)}
-.dot{width:6px;height:6px;border-radius:50%;background:var(--dot);box-shadow:0 0 8px var(--dot-glow);animation:pulse 2.4s ease-in-out infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.worlds{display:flex;gap:18px;flex-wrap:wrap}
-.signup{display:grid;gap:10px;width:min(420px,100%);justify-items:center}
-.signup-row{display:flex;align-items:center;gap:6px;width:100%;border-radius:999px;padding:5px 5px 5px 20px;border:1px solid var(--hair);
-  background:var(--pill-bg);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);transition:border-color .2s,box-shadow .2s}
-.signup-row:focus-within{border-color:rgba(176,18,42,.8);box-shadow:0 0 22px rgba(176,18,42,.25)}
+.dim{color:var(--cream-2)}
+.glass{background:var(--pill-bg,var(--glass));border:1px solid var(--hair);-webkit-backdrop-filter:blur(18px) saturate(1.2);backdrop-filter:blur(18px) saturate(1.2)}
+
+/* ---------- header ---------- */
+.top{position:fixed;z-index:50;top:env(safe-area-inset-top,0px);left:0;right:0;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:16px var(--gut-r) 0 var(--gut-l);pointer-events:none}
+.top > *{pointer-events:auto}
+.top-left{display:flex;align-items:center;gap:6px;min-width:0}
+.logo-pill{display:flex;align-items:center;height:42px;padding:0 18px;border-radius:999px;color:var(--cream);transition:background-color .3s}
+.logo-pill svg{height:19px;width:auto;display:block}
+.logo-pill:hover{background:rgba(239,226,208,.12)}
+.nav-pill{display:flex;align-items:center;height:42px;padding:0 6px;border-radius:999px;gap:2px}
+.nav-pill a{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:7px 11px;border-radius:999px;color:var(--cream-2);transition:color .2s, background-color .2s;white-space:nowrap}
+.nav-pill a:hover{color:var(--cream)}
+.nav-pill a[aria-current="page"]{color:var(--btn-fg,var(--ink));background:var(--btn-bg,var(--cream));box-shadow:inset 0 0 0 1px var(--btn-bd,transparent)}
+.clock{white-space:nowrap;color:var(--cream-2)}
+.clock b{font-weight:500;color:var(--cream);font-variant-numeric:tabular-nums}
+
+/* ---------- views ---------- */
+main{transition:opacity .38s ease, filter .38s ease}
+main.leaving{opacity:0;filter:blur(10px)}
+.view[hidden]{display:none!important}
+
+.stage{min-height:100svh;display:grid;grid-template-rows:1fr auto;gap:24px;
+  padding-block:calc(var(--head) + 16px + env(safe-area-inset-top,0px)) 24px;padding-left:var(--gut-l);padding-right:var(--gut-r)}
+.stage-center{display:grid;place-items:center;min-height:0}
+.stage-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:16px}
+
+/* hero mark */
+.hero{display:flex;flex-direction:column;align-items:center;gap:clamp(22px,4vh,38px);text-align:center}
+.hero-mark{width:clamp(180px,24vw,300px);height:auto;color:var(--cream);overflow:visible;display:block}
+.hero-mark .eyes{transition:transform .9s cubic-bezier(.2,.8,.2,1)}
+.hero-mark .lids{transform-box:fill-box;transform-origin:50% 50%;transition:transform .12s ease}
+.hero-mark.blink .lids{transform:scaleY(.08)}
+.hero-mark.squint .lids{transform:scaleY(.55)}
+.hero-word{width:clamp(250px,34vw,440px);height:auto;color:var(--cream);display:block}
+.hero-line{color:var(--cream-2)}
+.hero-line a{color:var(--cream-2);text-decoration:none;border-bottom:1px solid transparent;transition:color .2s,border-color .2s}
+.hero-line a:hover,.hero-line a:focus-visible{color:var(--cream);border-color:var(--cream-3)}
+.lines div.flash{animation:flash 1.8s ease}
+@keyframes flash{0%,40%{background:rgba(239,226,208,.14)}100%{background:transparent}}
+
+/* thumbnail strip */
+.strip{display:flex;gap:4px;padding:5px;border-radius:16px}
+.thumb{width:52px;height:52px;border-radius:11px;display:grid;place-items:center;color:var(--cream-2);border:1px solid transparent;transition:color .25s, border-color .25s, background-color .25s}
+.thumb svg{width:30px;height:30px;display:block}
+.thumb .bao{width:32px;height:22px}
+.thumb:hover,.thumb.on{color:var(--cream);border-color:rgba(239,226,208,.5);background:rgba(239,226,208,.07)}
+
+/* info card */
+.card{width:min(352px,100%);display:flex;flex-direction:column;gap:8px}
+.card-body{border-radius:16px;padding:18px 18px 14px;display:flex;flex-direction:column;gap:14px}
+.card h2{font-family:var(--wide);font-size:15px;letter-spacing:.14em;line-height:1.4;text-transform:uppercase}
+.card p{font-size:13.5px;line-height:1.55;color:var(--cream-2);font-weight:400}
+.rows{display:grid;gap:7px;padding-top:12px;border-top:1px solid var(--hair)}
+.row{display:flex;gap:10px;align-items:baseline}
+.row .k{color:var(--cream-3);min-width:64px}
+.tag{align-self:flex-start;font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;background:var(--btn-bg,var(--cream));color:var(--btn-fg,var(--ink));box-shadow:inset 0 0 0 1px var(--btn-bd,transparent);padding:2px 6px;border-radius:3px}
+.cta{display:flex;justify-content:space-between;align-items:center;gap:12px;height:52px;padding:0 18px;border-radius:999px;background:var(--btn-bg,var(--cream));color:var(--btn-fg,var(--ink));box-shadow:inset 0 0 0 1px var(--btn-bd,transparent);
+  font-family:var(--wide);font-size:10px;letter-spacing:.24em;text-transform:uppercase;border:0;cursor:pointer;transition:transform .25s ease, box-shadow .25s ease;width:100%}
+.cta .mono{font-size:11px;letter-spacing:.04em}
+.cta:hover{transform:translateY(-1px);box-shadow:0 10px 30px -12px rgba(0,0,0,.6)}
+.swap{transition:opacity .22s ease}
+/* home info card only appears while a world icon is hovered, or after a tap/click pins it */
+#homeCard{opacity:0;visibility:hidden;transform:translateY(8px);transition:opacity .25s ease,transform .25s ease,visibility 0s linear .25s}
+#homeCard.show{opacity:1;visibility:visible;transform:none;transition:opacity .25s ease,transform .25s ease,visibility 0s}
+.swap.out{opacity:0}
+
+.scroll-hint{display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--cream-3)}
+.scroll-hint i{display:block;width:1px;height:28px;background:linear-gradient(var(--cream-3),transparent)}
+
+/* emblem (world pages) */
+.emblem-wrap{perspective:900px;display:flex;flex-direction:column;align-items:center;gap:28px}
+.emblem{width:clamp(190px,26vw,320px);height:auto;color:var(--cream);transition:transform .7s cubic-bezier(.2,.8,.2,1);filter:drop-shadow(0 30px 40px rgba(0,0,0,.35));display:block}
+.emblem text{font-family:var(--wide)}
+
+/* ---------- long-form sections under a stage ---------- */
+.page{padding-left:var(--gut-l);padding-right:var(--gut-r);padding-block:24px 0}
+.wrap{max-width:1080px;margin:0 auto}
+.lede{font-size:clamp(22px,2.6vw,32px);line-height:1.38;font-weight:300;max-width:30ch;letter-spacing:-.005em}
+.kicker{display:flex;flex-wrap:wrap;gap:6px 14px;color:var(--cream-2);margin-bottom:22px}
+.sec{padding-block:clamp(56px,10vh,96px);border-top:1px solid var(--hair);display:grid;gap:40px}
+.sec:first-child{border-top:0}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:16px;overflow:hidden}
+.fact{background:rgba(20,23,27,.42);padding:18px 18px 20px;display:grid;gap:6px;min-width:0}
+.fact .v{font-size:15px;line-height:1.45}
+.trio{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(20px,3vw,40px)}
+.trio article{display:grid;gap:10px;align-content:start;min-width:0}
+.trio h3{font-family:var(--wide);font-size:12px;letter-spacing:.22em;text-transform:uppercase;line-height:1.6}
+.trio p{color:var(--cream-2);font-weight:300;font-size:15.5px;max-width:42ch}
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:clamp(24px,5vw,72px);align-items:start}
+.h-sec{font-family:var(--wide);font-size:clamp(17px,2vw,22px);letter-spacing:.24em;text-transform:uppercase;line-height:1.5}
+.body-copy{display:grid;gap:16px;color:var(--cream-2);font-weight:300;font-size:16.5px;max-width:58ch}
+.body-copy strong{color:var(--cream);font-weight:500}
+
+/* sign-up */
+.signup{display:grid;gap:10px;max-width:460px}
+.signup-row{display:flex;align-items:center;gap:6px;border-radius:999px;padding:5px 5px 5px 20px}
 .signup input{flex:1;min-width:0;background:transparent;border:0;color:var(--cream);font:inherit;font-size:15px;padding:10px 0;outline:none}
 .signup input::placeholder{color:var(--cream-3)}
-.signup button{height:42px;padding:0 18px;border-radius:999px;background:var(--btn-bg);color:var(--btn-fg);border:1px solid var(--btn-bd);font-family:var(--wide);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
-.signup button:focus-visible,.signup input:focus-visible{outline:none}
-.signup button:focus-visible{box-shadow:0 0 0 2px var(--char),0 0 0 3.5px var(--cream)}
-.signup .note{min-height:1.4em;color:var(--cream-2);text-align:center}
-.signup .fine{color:var(--cream-3);font-size:10px}
-.signup.done .signup-row{display:none}
-@media (max-width:600px){.bot{flex-direction:column-reverse;gap:8px}.worlds{justify-content:center;gap:12px}.top .loc{display:none}}
-@media (prefers-reduced-motion:reduce){.eyes,.lids{transition:none}.dot,#scan{animation:none}#scan{display:none}}
+.signup-row:focus-within{border-color:rgba(239,226,208,.55)}
+.signup button{height:42px;padding:0 18px;border-radius:999px;background:var(--btn-bg,var(--cream));color:var(--btn-fg,var(--ink));border:1px solid var(--btn-bd,transparent);font-family:var(--wide);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;cursor:pointer;white-space:nowrap}
+.signup .note{min-height:1.4em;color:var(--cream-2)}
 
-/* ---- Intro: steamer basket ---- */
-#intro{position:fixed;inset:0;z-index:4;display:grid;place-items:center;perspective:1400px;transition:opacity .9s ease}
-#intro .stage{position:relative;width:min(560px,82vw);aspect-ratio:1/1;display:grid;place-items:center;transform-style:preserve-3d}
-#intro svg{position:absolute;overflow:visible;color:var(--ink,#EFE2D0)}
-#intro .side{width:100%;transition:transform 1.3s cubic-bezier(.6,0,.3,1),opacity 1s ease}
-#intro .top{width:84%;transform:rotateX(78deg) translateY(20%);opacity:0;transition:transform 1.4s cubic-bezier(.3,0,.2,1),opacity .9s ease .25s}
-#intro .lid{transition:transform 1.3s cubic-bezier(.5,0,.2,1),opacity .7s ease .1s}
-#intro .basket{opacity:0;transition:opacity 1s ease .35s}
-#intro .enter{position:absolute;left:50%;bottom:calc(-1 * clamp(28px,6vh,56px));transform:translateX(-50%);background:none;border:0;color:var(--cream);cursor:pointer;padding:12px 18px;white-space:nowrap;transition:opacity .5s}
-#intro .enter span{animation:pulse 2.4s ease-in-out infinite}
-#intro .hint{position:absolute;left:50%;bottom:calc(-1 * clamp(28px,6vh,56px));transform:translateX(-50%);color:var(--cream-2);opacity:0;transition:opacity .6s;white-space:nowrap;pointer-events:none;padding:12px 0}
-#intro .hit{fill:transparent;stroke:currentColor;stroke-width:5;stroke-opacity:0;stroke-dasharray:2 12;stroke-linecap:round;cursor:pointer;pointer-events:none;transition:stroke-opacity .3s}
-#intro .bun{transform-box:fill-box;transform-origin:50% 50%;transition:transform .35s cubic-bezier(.2,.8,.2,1),opacity .6s}
-#intro .bun.on .hit{stroke-opacity:.75;transition:stroke-opacity .08s}
-#intro.picked .bun .hit{stroke-opacity:0;transition:stroke-opacity .5s}
-#intro .zoom{transition:transform 1.1s cubic-bezier(.6,0,.2,1)}
-/* states */
-#intro.up .side{transform:translateY(55%) rotateX(-70deg) scale(.9);opacity:0}
-#intro.up .top{transform:none;opacity:1}
-#intro.up .enter{opacity:0;pointer-events:none}
-#intro.open .lid{transform:translateY(-6%) scale(1.7) rotate(-6deg);opacity:0}
-#intro.open .basket{opacity:1}
-#intro.choose .hint{opacity:1}
-#intro.picked .hint{opacity:0}
-#intro.gone{opacity:0;pointer-events:none}
-body.intro .page{opacity:0;pointer-events:none}
-.page{transition:opacity 1.1s ease}
-body.intro .hero{transform:scale(.86)}
-.hero{transition:transform 1.4s cubic-bezier(.2,.8,.2,1)}
-@media (prefers-reduced-motion:reduce){#intro *{transition-duration:.01s!important;transition-delay:0s!important}}
+/* worlds index */
+.index{display:grid;width:100%;max-width:1080px;margin:0 auto}
+.index a{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:16px;padding:clamp(18px,3.4vh,30px) 4px;border-top:1px solid var(--hair);transition:padding .35s ease}
+.index a:last-child{border-bottom:1px solid var(--hair)}
+.index .name{font-family:var(--wide);text-transform:uppercase;font-size:clamp(22px,5vw,62px);letter-spacing:.12em;line-height:1.1;color:var(--cream-3);transition:color .35s ease, letter-spacing .5s ease}
+.index .meta{display:grid;justify-items:end;gap:4px;text-align:right;color:var(--cream-2)}
+.index a:hover .name,.index a:focus-visible .name{color:var(--cream);letter-spacing:.16em}
+.index a:hover{padding-left:14px}
+
+/* shop list */
+.lines{display:grid;border-top:1px solid var(--hair)}
+.lines div{display:flex;justify-content:space-between;gap:12px;padding:14px 2px;border-bottom:1px solid var(--hair);align-items:baseline}
+.lines span:first-child{font-size:16px}
+
+/* journal */
+.log{display:grid}
+.log article{display:grid;grid-template-columns:120px 170px minmax(0,1fr);gap:20px;padding-block:24px;border-top:1px solid var(--hair);align-items:baseline}
+.log article:last-child{border-bottom:1px solid var(--hair)}
+.log h3{font-size:19px;font-weight:500;line-height:1.4}
+.log p{color:var(--cream-2);font-weight:300;margin-top:6px}
+
+/* centred text stages */
+.statement{display:grid;justify-items:center;gap:26px;text-align:center;max-width:820px}
+.statement h1{font-family:var(--wide);font-size:clamp(22px,4vw,46px);letter-spacing:.2em;line-height:1.35;text-transform:uppercase}
+.statement p{color:var(--cream-2);font-weight:300;font-size:clamp(16px,1.6vw,19px);max-width:46ch}
+
+/* footer */
+.foot{padding-left:var(--gut-l);padding-right:var(--gut-r);padding-block:44px calc(36px + env(safe-area-inset-bottom,0px))}
+.foot .wrap{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;border-top:1px solid var(--hair);padding-top:28px;color:var(--cream-2)}
+.foot svg{width:40px;height:auto;color:var(--cream);display:block}
+.foot nav{display:flex;gap:18px;flex-wrap:wrap}
+.foot a:hover{color:var(--cream)}
+
+/* ---------- responsive ---------- */
+@media (max-width:900px){
+  .facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .trio{grid-template-columns:minmax(0,1fr)}
+  .split{grid-template-columns:minmax(0,1fr)}
+  .log article{grid-template-columns:minmax(0,1fr);gap:4px}
+}
+@media (max-width:720px){
+  :root{--head:66px}
+  .stage-foot{flex-direction:column;align-items:stretch}
+  .strip{align-self:center}
+  .card{width:100%}
+  .clock{display:none}
+  .top{padding-top:12px}
+  .logo-pill{padding:0 14px;height:40px}
+  .logo-pill svg{height:16px}
+  .nav-pill{height:40px}
+  .nav-pill a{padding:7px 8px;font-size:10px}
+  .index .meta{display:none}
+  .hero-mark{width:min(200px,52vw)}
+  .emblem{width:min(200px,52vw)}
+}
+@media (max-width:400px){
+  .nav-pill a[href="#journal"]{display:none}
+}
+@media (max-width:560px){ .facts{grid-template-columns:minmax(0,1fr)} }
+@media (prefers-reduced-motion:reduce){
+  main,.swap,.emblem,.hero-mark .eyes,.index .name{transition:none!important}
+}
 </style>
-</head>
-<body class="intro">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="bao" viewBox="20 14 978 636"><path fill="currentColor" fill-rule="evenodd" d="M766 637L850 636L861 633C876 629 884 626 895 620C921 606 945 582 958 555C978 516 986 481 986 436C986 399 981 368 967 330C954 293 934 256 908 224C879 189 841 154 800 127C770 107 744 95 702 79C688 74 676 68 666 60C642 42 620 31 595 26C581 23 567 24 544 28C521 33 507 33 482 28C455 22 437 23 413 30C394 35 386 39 366 52C343 67 339 69 314 76C296 81 259 98 231 114C156 156 94 219 59 288C51 306 46 318 41 336C31 370 28 400 32 432C38 485 59 538 90 576C115 607 142 624 184 635C190 636 217 636 403 637C520 637 630 637 648 637C667 637 719 637 766 637ZM197 603C180 601 156 591 141 581C132 574 111 552 106 544C104 541 100 534 98 530C92 520 78 490 74 477C66 451 64 432 64 406C64 379 67 359 75 334C82 314 100 280 113 262C117 256 135 233 137 232C137 232 142 227 146 222C166 201 188 183 212 165C254 135 290 117 333 105C340 103 348 101 350 100C353 99 362 93 371 87C391 74 398 70 411 65C424 60 429 58 442 57C455 56 466 57 480 61C494 64 502 65 517 65C526 64 534 63 542 62C561 58 567 57 579 57C601 59 619 66 653 89C670 101 681 106 707 116C741 128 787 156 822 185C834 195 862 222 871 232C880 243 895 264 902 274C913 292 915 295 922 308C938 341 948 375 952 410C959 462 946 521 922 553C910 568 893 584 880 591C873 594 855 601 846 602C841 604 785 604 522 604C347 604 201 603 197 603ZM402 483C422 479 441 472 445 466C449 462 449 457 446 455C443 453 422 445 409 440C405 439 393 435 384 431C374 427 361 423 356 420C340 415 277 389 268 385C251 378 247 377 241 380C235 383 233 392 237 402C241 411 251 425 264 438C286 462 320 480 352 485C364 487 388 486 402 483ZM691 484C720 477 748 462 768 442C786 424 798 405 799 392C799 386 799 385 796 382C794 380 792 379 790 378C785 378 782 379 760 389C741 397 711 410 698 415C692 417 684 420 680 422C675 424 668 426 664 428C659 430 648 434 639 437C630 440 620 444 616 445C613 446 607 448 603 450C580 458 586 469 619 479C634 485 645 486 666 486C677 485 686 485 691 484ZM274 260C291 240 316 218 338 205C341 203 354 196 366 190C379 184 393 176 400 172C422 157 439 135 449 110C451 106 454 96 454 94C454 93 452 95 445 103C436 113 418 129 407 136C402 139 385 148 370 156C333 174 326 179 309 195C296 209 288 219 279 236C271 251 263 271 266 271C266 271 270 266 274 260ZM769 270C759 247 752 233 745 223C729 199 705 179 678 166C638 148 622 137 603 118C595 111 588 103 586 100C583 95 579 93 580 97C589 126 599 142 619 162C632 173 642 180 671 195C707 213 714 218 733 235C744 244 753 254 763 266C767 271 770 273 769 270Z"/></symbol>
+    <symbol id="word" viewBox="30 26 2306 94"><path fill="currentColor" fill-rule="evenodd" d="M2158 115C2174 110 2190 98 2194 86C2197 78 2197 68 2194 60C2190 50 2175 38 2160 33C2134 25 2101 31 2084 47C2077 55 2074 59 2073 69C2071 83 2075 94 2087 102C2095 109 2108 114 2119 116C2127 117 2152 116 2158 115ZM669 113C679 110 679 110 680 113C680 116 682 116 688 115L693 114L693 91L693 69L686 69C682 69 669 69 656 69L634 69L634 76L634 84L653 84L672 84L672 88C672 92 672 93 669 94C663 97 654 98 640 98C624 98 617 97 609 92C602 87 599 83 598 76C597 62 608 51 626 48C635 46 653 47 660 50C669 53 678 58 680 61C681 62 682 63 682 63C684 63 685 60 686 50L686 41L679 38C666 31 658 30 639 30C623 30 622 30 614 32C602 37 596 40 589 46C580 55 579 60 579 74C579 83 579 85 581 89C585 98 597 108 608 112C618 115 624 116 643 116C658 115 663 115 669 113ZM1923 115C1923 114 1922 113 1921 112C1920 111 1914 100 1907 88C1900 77 1889 60 1883 50L1872 32L1861 32L1850 32L1845 40C1838 53 1827 69 1812 92C1804 103 1798 113 1798 114C1798 115 1802 115 1808 115L1819 115L1824 107L1830 99L1860 99L1890 100L1895 106C1901 116 1900 116 1912 115C1918 115 1922 115 1923 115ZM63 107L68 100L97 99L127 99L132 107L137 115L149 115C156 115 161 115 161 114C161 114 158 109 155 104C147 92 141 83 123 54L109 32L98 32L86 32L84 36C83 39 78 47 73 54C67 62 60 74 55 82C50 89 44 99 40 104C37 109 34 114 34 114C34 115 39 115 46 115L58 115L63 107ZM330 85C330 69 330 56 331 56C332 56 341 64 363 83C370 89 381 98 388 104L400 115L412 115L422 114L423 73L423 32L412 32L402 32L402 62C402 78 402 91 402 92C401 92 397 89 393 85C389 81 382 74 377 70C372 66 360 56 350 48L332 32L320 32L308 32L308 72C308 94 308 113 308 114C309 115 312 115 319 115L330 114L330 85ZM873 101L874 88L893 87L912 87L918 93C920 97 926 103 930 107L937 115L951 115C958 115 964 115 964 114C964 114 960 110 955 104C943 92 937 85 937 85C937 84 940 83 943 81C951 78 955 73 957 66C959 61 959 56 957 50C955 45 947 38 941 35L936 32L894 32C871 32 852 33 852 33C852 34 852 52 852 74L852 115L862 115L873 115L873 101ZM1183 99L1183 83L1208 58C1222 45 1233 33 1233 33C1233 32 1227 32 1220 32L1207 32L1196 44C1190 50 1182 58 1178 62L1172 68L1167 63C1164 60 1156 52 1149 45L1137 32L1124 32C1117 32 1111 32 1111 33C1111 33 1122 45 1136 58L1161 83L1161 99L1161 115L1172 115L1183 115L1183 99ZM1632 113C1643 110 1649 102 1649 91C1649 84 1648 81 1644 76C1641 73 1641 73 1642 71C1645 66 1646 63 1646 57C1646 46 1643 40 1633 35L1628 32L1584 32L1542 32L1541 73C1541 95 1541 114 1542 114C1542 115 1561 115 1584 115C1619 115 1628 115 1632 113ZM1571 98L1561 98L1560 90C1560 85 1560 82 1561 82C1562 81 1576 81 1594 81C1625 81 1626 81 1628 83C1632 87 1630 95 1623 98C1620 99 1593 99 1571 98ZM2118 96C2100 92 2093 83 2096 69C2097 64 2098 63 2102 59C2108 53 2112 51 2121 50C2130 48 2138 48 2147 49C2165 53 2174 61 2174 74C2174 90 2160 98 2134 98C2128 98 2120 97 2118 96ZM78 83C77 82 79 79 82 75C84 71 89 64 92 59C95 54 98 50 98 50C99 50 100 51 101 53C102 54 106 62 110 69C114 76 118 83 117 83C117 84 78 84 78 83ZM1841 83C1841 81 1860 51 1861 51C1862 51 1865 54 1867 59C1870 64 1874 71 1877 75C1880 79 1882 83 1881 83C1881 84 1872 84 1861 84C1846 84 1841 84 1841 83ZM875 70C874 70 874 55 874 50C874 50 882 49 902 49C926 50 931 50 934 51C942 55 940 65 931 69C927 70 876 72 875 70ZM1561 64C1560 64 1560 60 1560 56L1560 50L1589 49C1605 49 1620 49 1621 50C1628 51 1630 61 1624 64C1621 65 1562 66 1561 64ZM2284 47L2284 36L2288 36C2291 36 2292 36 2292 34C2292 32 2291 32 2281 32C2272 32 2270 33 2270 34C2270 35 2271 36 2273 36L2277 36L2277 46C2277 52 2277 57 2278 57C2278 58 2280 58 2281 58C2283 58 2284 57 2284 47ZM2306 51C2306 47 2306 44 2306 43C2307 43 2308 44 2309 47C2313 57 2313 58 2316 58C2318 58 2319 57 2322 49C2323 45 2325 42 2325 42C2326 42 2326 45 2326 50C2326 57 2327 58 2329 58L2332 58L2332 45L2332 32L2327 32C2323 32 2323 33 2322 35C2320 42 2317 48 2316 49C2315 49 2315 48 2314 47C2314 46 2313 42 2311 39L2309 32L2304 32L2300 32L2300 45L2300 58L2303 58C2305 58 2306 57 2306 51Z"/></symbol>
+    <symbol id="lockup" viewBox="232 127 2178 423"><path fill="currentColor" fill-rule="evenodd" d="M733 539C754 537 773 529 788 514C801 502 810 489 817 470C830 440 833 409 826 373C819 327 796 284 759 246C730 215 695 192 657 176C644 171 639 169 633 164C628 159 612 149 605 146C590 138 576 137 554 141C540 144 536 144 520 141C508 138 494 138 482 141C470 144 461 149 450 158C437 167 434 168 421 173C356 195 299 245 270 304C245 356 242 411 261 460C276 498 301 525 332 535C345 540 341 540 536 540C643 540 726 540 733 539ZM340 513C320 507 301 490 289 466C286 459 279 440 277 432C272 414 270 386 273 368C279 327 302 286 337 252C352 238 361 230 375 221C396 207 409 200 432 193C442 189 446 188 457 179C472 167 484 162 499 161C508 161 510 161 521 164C536 168 540 168 557 164C580 158 595 162 621 181C628 186 636 191 646 195C668 205 677 210 690 219C727 241 759 275 781 314C791 332 798 350 803 372C806 388 807 416 805 431C801 453 796 466 786 481C778 493 768 502 755 508C741 516 757 515 542 515C358 515 346 515 340 513ZM1011 509C1013 508 1014 507 1015 505C1016 504 1016 456 1016 345L1016 188L1014 185C1012 182 1011 182 1007 182C1003 182 1002 182 1000 185L997 188L997 346C997 490 997 505 999 507C1002 511 1006 512 1011 509ZM1392 508C1406 504 1417 494 1421 480C1423 474 1423 462 1421 456C1420 453 1415 445 1412 440C1411 440 1412 438 1413 436C1420 427 1421 424 1420 412C1420 402 1420 400 1418 396C1413 386 1404 378 1393 374C1387 372 1385 372 1296 372L1206 372L1202 374C1200 376 1197 379 1196 381C1194 386 1194 387 1194 440C1194 478 1194 496 1195 498C1197 504 1201 508 1208 509C1212 510 1388 509 1392 508ZM1882 509C1918 508 1919 508 1926 506C1945 499 1961 485 1969 468C1979 444 1974 414 1956 395C1947 384 1936 378 1922 374C1914 372 1912 372 1847 372C1780 373 1779 373 1773 375C1735 388 1716 423 1726 460C1731 481 1747 498 1768 506C1780 510 1803 511 1882 509ZM1488 506C1491 504 1502 490 1552 427C1560 418 1568 409 1569 408C1573 405 1581 405 1585 408C1586 409 1590 412 1592 415C1616 447 1652 491 1659 499C1667 509 1668 509 1684 509C1697 509 1697 509 1700 507C1704 502 1703 499 1692 486C1680 472 1662 449 1634 414C1609 384 1606 381 1597 376C1576 366 1554 372 1538 392C1534 397 1528 405 1524 410C1520 415 1511 425 1506 432C1500 440 1486 457 1475 471C1457 493 1454 497 1454 500C1454 503 1455 504 1457 506C1460 509 1461 509 1473 509C1483 509 1485 508 1488 506ZM1267 477L1230 476L1229 470C1228 461 1229 457 1231 456C1232 455 1259 455 1305 455C1384 455 1382 455 1386 461C1388 465 1388 467 1386 471C1383 477 1382 477 1342 477C1321 477 1288 477 1267 477ZM1794 477C1783 477 1782 476 1776 473C1768 470 1761 463 1758 456C1753 445 1755 427 1764 417C1767 413 1774 408 1780 406C1785 404 1790 404 1849 404L1913 404L1919 407C1928 411 1933 415 1937 423C1940 429 1940 430 1940 440C1940 449 1940 450 1937 456C1934 464 1928 469 1921 473C1911 478 1907 478 1855 478C1828 478 1801 477 1794 477ZM1601 456C1595 449 1583 435 1582 434C1581 434 1579 433 1576 433C1573 433 1571 434 1569 436C1564 442 1550 458 1550 459C1550 460 1601 461 1602 460C1603 459 1602 458 1601 456ZM651 437C677 432 699 417 709 396C713 389 714 387 714 380C714 373 714 372 711 369C707 365 705 365 689 373C683 376 674 380 670 382C661 386 655 388 645 393C641 395 638 396 637 396C637 396 634 398 629 400C625 402 614 406 606 410C590 416 585 419 585 422C585 424 589 428 594 430C610 438 632 440 651 437ZM462 437C476 434 488 429 492 424C496 418 493 415 472 407C457 401 436 392 422 385C415 382 407 378 404 377C402 376 395 373 390 370C379 365 375 365 372 369C370 371 370 372 370 380C370 394 374 404 385 415C404 433 434 441 462 437ZM1230 423C1228 422 1227 410 1229 407L1230 404L1306 404C1379 404 1381 404 1383 406C1390 411 1388 420 1380 423C1377 425 1366 425 1304 425C1239 425 1231 425 1230 423ZM2048 397C2048 392 2048 387 2049 387C2049 387 2050 389 2051 391C2053 398 2058 407 2060 407C2062 408 2065 405 2069 396C2071 392 2073 388 2073 388C2074 388 2074 393 2074 398C2074 407 2075 408 2077 408C2078 408 2080 408 2080 407C2081 406 2081 374 2080 373C2080 373 2078 372 2076 373C2073 373 2073 374 2068 383C2065 389 2062 394 2062 395C2061 396 2059 393 2055 385C2049 372 2048 372 2045 372L2042 372L2041 389C2041 398 2041 406 2041 407C2042 408 2043 408 2045 408L2048 408L2048 397ZM2022 402C2022 400 2022 393 2022 388L2022 379L2028 379C2033 379 2033 379 2033 376C2033 372 2032 372 2016 372L2004 372L2004 376C2004 378 2004 379 2008 379L2014 380L2014 393L2014 407L2018 407C2021 407 2022 406 2022 402ZM1224 306C1227 304 1259 265 1279 239C1295 218 1300 215 1308 218C1311 220 1323 234 1350 269C1360 282 1374 299 1379 304L1383 308L1396 309L1410 309L1413 306C1415 304 1416 302 1416 300C1416 299 1414 296 1411 292C1407 287 1389 265 1368 238C1332 194 1326 187 1315 183C1309 181 1297 181 1291 183C1280 188 1275 192 1252 220C1187 301 1190 297 1190 301C1190 305 1192 307 1195 308C1196 309 1202 309 1209 309C1220 309 1221 309 1224 306ZM1474 305L1477 302L1477 282C1478 271 1478 253 1478 243L1478 225L1481 222C1483 220 1485 219 1487 219C1491 219 1492 220 1554 267C1610 308 1610 308 1625 308C1642 308 1654 299 1658 283C1660 279 1660 271 1660 234L1660 190L1656 186L1652 182L1644 182C1637 182 1635 182 1633 184C1627 188 1627 190 1627 229C1627 269 1627 268 1621 270C1617 272 1614 270 1604 263C1600 259 1592 253 1587 250C1582 246 1569 237 1558 229C1523 203 1504 189 1500 187C1490 182 1474 180 1464 185C1457 188 1451 194 1448 200C1446 205 1445 206 1445 252C1445 304 1445 303 1451 307C1454 309 1456 309 1463 309C1471 309 1471 308 1474 305ZM1889 306C1898 302 1904 298 1908 290L1911 284L1911 265C1911 248 1911 246 1909 242C1908 240 1906 237 1904 236L1900 234L1849 233C1793 233 1794 233 1790 239C1787 243 1787 249 1790 254C1791 255 1794 258 1796 259C1800 261 1801 261 1837 261L1873 262L1875 264C1880 268 1878 274 1872 277C1871 278 1852 278 1810 278C1752 278 1750 278 1745 276C1731 271 1722 255 1725 241C1728 229 1734 221 1744 216L1748 214L1824 213C1896 212 1899 212 1902 210C1908 207 1910 204 1910 197C1910 190 1908 187 1902 184C1899 182 1897 182 1823 182L1748 182L1740 184C1728 188 1720 193 1711 202C1700 213 1694 225 1693 242C1692 268 1703 289 1724 301C1729 304 1739 307 1745 308C1746 309 1778 309 1815 309L1882 308L1889 306ZM1971 307C1976 304 1977 300 1977 285L1977 272L1980 269L1983 266L2023 266L2062 266L2083 280C2094 288 2108 297 2114 302L2125 309L2139 309L2153 309L2156 306C2158 304 2159 302 2159 300C2159 295 2154 291 2135 278C2127 272 2120 267 2120 267C2121 266 2123 265 2126 265C2139 263 2149 255 2155 243C2158 237 2158 236 2158 224C2158 214 2158 212 2156 207C2150 195 2143 188 2130 184L2124 182L2040 182L1956 182L1952 184C1950 185 1947 188 1946 190C1944 195 1944 196 1944 247C1944 305 1944 303 1950 307C1955 310 1966 310 1971 307ZM2295 307C2302 303 2302 301 2302 281C2302 260 2300 263 2319 251C2341 235 2389 203 2393 200C2399 196 2400 192 2398 187C2397 186 2395 184 2393 183C2390 182 2368 182 2365 183C2362 185 2330 206 2312 218C2305 223 2296 229 2293 231C2288 234 2287 234 2284 233C2283 232 2273 226 2263 219C2252 211 2237 200 2227 194L2211 182L2198 182C2184 182 2182 183 2179 188C2176 195 2178 197 2197 210C2205 216 2220 227 2230 234C2240 241 2253 251 2259 255L2270 262L2270 281L2270 301L2273 304C2276 308 2278 309 2286 309C2291 309 2293 308 2295 307ZM393 292C398 285 415 268 423 262C427 259 435 254 442 250C460 241 471 234 478 226C485 219 490 211 493 205C499 193 501 182 497 189C494 194 478 209 471 213C468 216 460 220 456 223C435 234 428 237 423 241C417 246 406 259 401 267C397 274 389 291 388 296C386 300 389 298 393 292ZM692 290C686 276 677 261 668 251C663 246 649 236 638 231C621 221 617 219 612 216C603 210 591 199 584 190C583 188 581 187 581 187C580 188 584 199 588 206C592 213 596 219 604 228C613 236 618 240 635 249C657 261 665 267 680 283C687 290 694 297 694 296C694 296 693 293 692 290ZM1325 267C1325 265 1321 260 1313 251C1307 244 1307 244 1303 244C1300 244 1298 245 1297 245C1294 248 1279 266 1280 267C1280 268 1325 268 1325 267ZM1979 233C1976 230 1976 228 1977 221C1979 212 1973 213 2051 213L2119 213L2123 217C2125 219 2126 221 2126 224C2126 227 2125 229 2123 231L2119 235L2057 235C2023 235 1992 235 1989 236C1982 236 1982 236 1979 233Z"/></symbol>
+
+    <!-- Dead of Knight: the relic sword Hellbane, point down, through a night moon -->
+    <symbol id="e-dok" viewBox="0 0 200 200">
+      <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="100" cy="100" r="64" stroke-width="1.6" opacity=".55"/>
+        <circle cx="100" cy="27" r="6"/>
+        <path d="M100 33 V54"/>
+        <path d="M96 38 H104 M96 44 H104 M96 50 H104" stroke-width="1.6"/>
+        <path d="M66 54 Q72 60 100 60 Q128 60 134 54"/>
+        <path d="M100 60 m-8 4 L92 160 L100 180 L108 160 L108 64"/>
+        <path d="M100 70 V152" stroke-width="1.4" opacity=".7"/>
+      </g>
+    </symbol>
+    <!-- Evergreen: squad insignia, a tree of chevrons inside a ranging ring -->
+    <symbol id="e-ever" viewBox="0 0 200 200">
+      <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="100" cy="100" r="72"/>
+        <g stroke-width="1.6" opacity=".7">
+          <path d="M100 16 V24 M100 176 V184 M16 100 H24 M176 100 H184"/>
+          <path d="M141 29 L137 36 M171 59 L164 63 M171 141 L164 137 M141 171 L137 164 M59 171 L63 164 M29 141 L36 137 M29 59 L36 63 M59 29 L63 36"/>
+        </g>
+        <polyline points="72,84 100,56 128,84"/>
+        <polyline points="64,112 100,76 136,112"/>
+        <polyline points="56,140 100,96 144,140"/>
+        <path d="M100 118 V152"/>
+      </g>
+    </symbol>
+    <!-- Triple Six: three sixes turning about one centre, inside a hexagon -->
+    <symbol id="e-six" viewBox="0 0 200 200">
+      <g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round">
+        <polygon points="100,22 167.5,61 167.5,139 100,178 32.5,139 32.5,61"/>
+        <polygon points="100,40 152,70 152,130 100,160 48,130 48,70" stroke-width="1.4" opacity=".5"/>
+      </g>
+      <g fill="currentColor" font-size="40" text-anchor="middle">
+        <text x="100" y="86">6</text>
+        <text x="100" y="86" transform="rotate(120 100 102)">6</text>
+        <text x="100" y="86" transform="rotate(240 100 102)">6</text>
+      </g>
+    </symbol>
+  </defs>
+</svg>
 
 <canvas id="bg" aria-hidden="true"></canvas>
 <div id="grain" aria-hidden="true"></div>
 <div id="hide" aria-hidden="true"></div>
+<div id="vignette" aria-hidden="true"></div>
 <div id="scan" aria-hidden="true"></div>
-<div id="vig" aria-hidden="true"></div>
 
-<div id="intro" role="dialog" aria-label="Enter Angry Bao">
-  <div class="stage">
-    <svg class="side" viewBox="0 0 1010 490" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M932.4 473.4C947.3 469.6 961.3 458.6 968.3 445.3C975.2 432.1 975.0 436.4 975.0 326.5L975.1 227.5L978.9 224.8C987.2 219.1 992.7 206.7 991.7 196.0C990.7 184.7 983.6 174.4 973.3 169.4C968.8 167.2 966.0 166.6 957.7 166.2L947.5 165.7L941.0 159.2C911.7 129.7 859.2 109.4 774.5 95.0C726.3 86.8 675.9 82.3 600.8 79.4L584.0 78.8L584.0 72.9C584.0 55.0 570.2 34.1 552.7 25.6C542.4 20.5 535.6 19.8 500.5 20.2C464.1 20.6 461.7 21.1 449.4 29.0C434.4 38.8 424.0 56.8 424.0 73.0L424.0 78.8L408.2 79.4C312.3 83.1 255.5 89.3 193.3 102.6C136.2 114.8 91.1 134.7 68.5 157.5L60.4 165.7L50.3 166.2C38.7 166.8 32.1 169.3 25.5 175.7C19.4 181.6 16.5 189.0 16.5 198.5C16.6 209.2 19.2 215.1 27.1 222.4L32.9 227.8L33.2 328.7L33.5 429.5L35.8 435.4C43.0 454.5 56.2 466.7 76.0 472.6L83.5 474.9L504.9 474.9C886.3 475.0 926.8 474.8 932.4 473.4ZM81.5 450.2C70.2 446.3 62.4 439.6 58.1 429.9C56.1 425.6 56.0 423.6 56.0 328.5L56.0 231.5L504.0 231.5L952.0 231.5L952.0 329.0L952.0 426.5L949.1 432.5C945.5 439.9 940.3 445.1 932.5 448.7L926.5 451.5L506.5 451.7C110.1 451.9 86.2 451.8 81.5 450.2ZM819.5 266.9L823.2 262.8L827.5 267.0C829.8 269.3 832.0 270.8 832.3 270.3C832.7 269.7 831.1 267.6 829.0 265.5L825.0 261.6L829.1 257.4C831.3 255.1 832.8 253.0 832.3 252.7C831.7 252.3 829.6 253.9 827.5 256.0L823.6 260.0L819.5 256.0C814.1 250.7 812.7 252.1 818.0 257.5L822.0 261.6L818.0 265.5C815.8 267.6 814.0 269.8 814.0 270.2C814.0 272.0 816.0 270.8 819.5 266.9ZM866.6 267.1C868.9 269.4 871.0 270.8 871.3 270.3C871.7 269.7 870.1 267.6 868.0 265.5L864.0 261.6L868.2 257.3C870.5 255.0 872.0 252.7 871.6 252.3C871.2 251.9 869.0 253.5 866.8 255.8L862.8 260.2L858.6 256.1C853.2 250.8 851.7 252.1 857.0 257.5L861.0 261.6L857.0 265.5C854.9 267.6 853.3 269.8 853.7 270.3C854.0 270.8 856.1 269.4 858.4 267.1L862.4 263.0L866.6 267.1ZM905.6 267.1C907.9 269.4 910.0 270.8 910.3 270.3C910.7 269.7 909.4 267.8 907.5 265.9C905.6 264.0 904.0 262.1 904.0 261.5C904.0 261.0 905.6 258.9 907.6 256.9C909.6 254.9 910.8 253.0 910.3 252.7C909.7 252.3 907.6 253.9 905.5 256.0L901.6 260.0L897.3 255.8C892.2 250.8 891.4 252.8 896.5 258.0L900.0 261.6L896.5 265.0C894.6 266.9 893.0 269.1 893.0 269.9C893.0 270.9 894.6 269.9 897.2 267.2L901.4 263.0L905.6 267.1ZM791.5 262.2C795.2 261.7 796.1 261.2 795.0 260.5C793.0 259.2 749.9 259.2 748.0 260.5C746.9 261.3 747.6 261.6 751.0 262.1C757.2 262.9 785.4 263.0 791.5 262.2ZM41.9 205.1C39.8 202.9 39.0 201.2 39.0 198.5C39.0 195.8 39.8 194.1 41.9 191.9L44.8 189.0L504.0 189.0L963.2 189.0L966.1 191.9C970.1 196.0 970.1 201.0 966.1 205.1L963.2 208.0L504.0 208.0L44.8 208.0L41.9 205.1ZM93.0 165.6C93.0 164.5 108.6 155.6 119.0 150.6C169.0 127.0 252.8 111.0 359.0 105.0C431.9 100.9 579.6 100.9 648.5 105.0C750.3 111.1 834.0 126.3 881.9 147.4C892.6 152.1 908.7 160.7 913.0 164.0C915.5 165.9 911.6 166.0 504.2 166.0C278.1 166.0 93.0 165.8 93.0 165.6ZM446.5 73.2C447.9 61.4 454.6 51.6 464.7 46.4L470.5 43.5L504.0 43.5L537.5 43.5L543.3 46.4C553.8 51.7 560.0 60.9 560.8 72.2L561.3 79.0L503.5 79.0L445.8 79.0L446.5 73.2Z"/></svg>
-    <svg class="top" viewBox="0 0 660 660" aria-hidden="true">
-      <g class="zoom">
-        <g class="basket"><path fill="currentColor" fill-rule="evenodd" d="M369.4 645.0C410.7 639.0 460.1 620.1 496.0 596.6C575.1 544.7 629.1 456.9 638.5 364.5C641.3 337.7 640.0 301.5 635.4 278.5C629.3 247.6 621.2 223.8 607.5 196.1C577.2 135.4 532.1 87.9 474.4 56.1C442.6 38.5 399.6 24.6 363.0 19.8C347.4 17.8 307.7 18.1 292.5 20.4C255.4 25.8 227.8 34.3 195.5 50.0C176.5 59.3 166.8 65.1 151.2 76.2C91.3 119.2 48.3 181.3 28.9 253.0C9.5 324.6 16.6 398.2 49.5 466.7C76.0 521.7 114.0 565.0 165.1 598.3C205.6 624.6 256.2 642.3 304.7 647.0C318.9 648.4 353.6 647.3 369.4 645.0ZM305.5 629.0C267.4 625.1 232.9 614.8 197.7 596.8C110.4 552.0 50.6 465.7 37.5 365.5C35.4 349.8 35.4 314.6 37.4 299.0C42.7 257.7 57.3 215.3 78.5 179.9C123.9 104.2 202.1 51.9 290.5 38.3C307.5 35.7 351.7 35.7 367.5 38.3C401.7 44.0 428.3 52.6 458.0 67.6C486.3 81.8 510.2 99.1 533.1 122.0C550.1 138.9 560.3 151.2 572.1 169.0C595.9 205.0 610.6 241.6 618.5 284.5C626.2 326.4 623.8 369.0 611.4 412.0C596.9 462.0 571.1 505.8 534.0 543.1C489.4 588.0 432.6 616.7 367.5 627.0C352.6 629.4 320.0 630.4 305.5 629.0ZM366.0 615.1C415.9 607.3 460.6 587.9 502.0 556.0C514.0 546.8 537.3 523.4 546.9 511.0C581.2 466.9 602.4 416.3 608.5 364.2C610.5 347.6 610.4 316.9 608.5 301.0C596.1 201.1 530.8 112.6 440.1 72.6C414.6 61.4 390.0 54.4 360.5 49.9C349.4 48.3 310.8 48.2 299.0 49.9C244.4 57.5 199.4 76.3 156.3 109.6C135.4 125.7 107.5 157.1 92.2 181.6C70.0 217.2 55.3 258.9 49.9 301.5C48.3 314.0 48.3 349.3 49.9 362.5C54.2 397.2 63.8 428.7 79.6 460.0C100.2 500.9 128.2 534.8 163.5 561.5C202.0 590.6 251.5 610.5 299.0 615.9C304.2 616.5 310.1 617.2 312.0 617.4C320.2 618.4 354.1 616.9 366.0 615.1ZM306.0 599.4C252.5 593.0 206.5 573.8 164.0 540.0C151.8 530.3 132.0 509.5 121.3 495.2C91.3 455.2 74.2 413.4 67.4 364.0C65.0 346.6 65.0 314.6 67.4 298.5C79.2 219.8 121.9 151.9 186.5 109.5C218.5 88.5 251.8 75.5 290.6 68.8C301.5 66.9 307.3 66.6 328.5 66.5C344.5 66.5 356.6 67.0 362.0 67.8C409.0 75.1 451.2 93.2 489.0 122.1C541.9 162.5 579.6 227.3 590.6 296.5C592.8 310.5 593.6 341.8 592.1 356.6C589.0 386.5 581.2 415.3 568.8 442.5C561.4 458.7 557.5 465.7 548.7 479.0C510.3 536.8 455.9 575.6 389.5 592.6C368.2 598.1 360.0 599.1 334.0 599.5C320.5 599.7 307.9 599.6 306.0 599.4ZM373.8 559.5C375.5 558.9 375.3 555.3 373.4 554.6C372.5 554.3 352.8 554.0 329.5 554.0C306.2 554.0 286.5 554.3 285.6 554.6C284.3 555.1 283.3 558.4 284.2 559.2C285.5 560.2 370.8 560.5 373.8 559.5ZM386.5 525.6C387.5 524.9 388.1 523.6 387.8 522.8C387.0 520.8 365.3 520.0 317.1 520.1C276.1 520.2 271.5 520.5 271.5 523.5C271.5 524.7 272.4 525.7 274.0 526.1C275.4 526.5 300.8 526.8 330.6 526.9C374.6 527.0 385.0 526.7 386.5 525.6ZM225.9 501.4C253.1 497.4 279.1 483.3 293.3 464.8C300.4 455.5 307.4 440.9 310.1 429.5C313.8 413.8 312.6 392.7 307.1 376.8C297.5 348.9 275.3 325.4 252.2 318.6C249.3 317.8 244.8 315.5 242.2 313.7C229.6 304.5 219.0 301.5 201.5 302.3C185.6 303.0 176.8 306.0 167.2 313.7C164.8 315.7 161.0 317.8 158.7 318.5C132.6 326.6 111.4 351.0 102.8 382.8C100.0 393.4 99.8 413.2 102.4 424.5C107.2 445.3 118.0 463.8 132.4 476.3C156.8 497.4 191.0 506.6 225.9 501.4ZM473.8 501.5C484.8 499.7 492.4 497.3 503.7 492.0C523.6 482.7 539.5 467.1 549.0 447.5C556.9 431.1 558.5 424.3 558.4 405.5C558.4 386.0 556.7 378.8 548.5 362.5C537.7 340.8 518.6 323.5 500.9 319.0C498.2 318.3 494.2 316.1 491.4 313.8C481.4 305.6 470.5 302.0 454.9 302.0C445.7 302.0 433.9 304.5 427.3 307.8C425.2 308.9 420.8 311.9 417.6 314.4C414.3 316.9 411.0 319.0 410.3 319.0C409.5 319.0 405.7 320.4 401.8 322.0C371.1 335.1 347.7 373.0 347.8 409.5C347.9 432.6 353.8 449.2 368.9 468.4C378.3 480.4 396.2 491.9 414.3 497.5C431.1 502.7 456.0 504.4 473.8 501.5ZM189.8 491.0C157.2 485.8 132.4 467.9 119.1 439.9C113.9 429.1 112.0 421.8 111.3 409.8C109.7 382.7 121.6 355.6 142.3 339.4C150.6 332.9 154.3 330.9 162.5 328.4C166.4 327.2 170.1 325.1 173.3 322.3C188.9 308.6 221.8 309.1 237.8 323.4C240.0 325.4 243.5 327.2 246.5 327.9C266.3 332.8 285.7 352.0 294.9 375.9C301.5 393.2 303.2 413.9 299.1 429.3C293.0 452.4 276.8 471.2 253.5 482.1C239.7 488.6 228.2 491.1 210.5 491.5C202.2 491.7 192.9 491.5 189.8 491.0ZM432.5 490.4C408.6 486.2 387.7 474.7 375.5 459.2C364.1 444.7 359.0 429.8 359.0 410.5C359.0 395.4 361.3 385.2 367.9 371.5C378.1 350.2 394.1 335.2 412.8 329.3C417.5 327.8 421.5 326.0 422.0 325.0C423.7 321.9 433.4 316.1 439.6 314.6C446.6 312.8 462.2 312.5 468.8 314.0C475.5 315.6 482.1 319.1 486.1 323.2C489.1 326.3 491.4 327.5 497.2 329.1C517.7 334.8 537.6 357.1 545.0 383.0C548.4 394.5 548.9 413.8 546.1 425.2C539.4 453.5 516.6 477.6 488.0 486.8C472.0 492.0 449.6 493.4 432.5 490.4ZM435.2 447.9C446.4 442.2 455.9 431.3 460.0 419.5C462.6 412.0 462.6 408.4 460.0 407.0C456.6 405.2 454.2 406.7 453.0 411.3C449.1 426.6 438.8 438.2 425.2 442.5C418.9 444.5 417.0 447.2 419.7 450.2C422.0 452.8 426.9 452.1 435.2 447.9ZM255.0 440.5C256.8 438.3 256.3 427.9 254.1 421.4C250.0 409.9 241.0 399.4 230.7 394.4C224.6 391.4 220.6 391.6 219.5 395.1C218.6 397.7 220.3 399.6 225.6 402.0C236.8 406.9 247.2 422.1 247.5 434.0C247.6 437.1 248.0 440.2 248.4 440.8C249.4 442.5 253.5 442.3 255.0 440.5ZM512.0 426.5C516.5 421.1 502.9 401.0 490.4 394.7C483.8 391.4 475.0 389.1 472.3 390.1C467.3 391.9 468.9 397.4 474.7 398.5C487.9 400.8 499.4 411.0 504.9 425.2C506.1 428.4 509.9 429.0 512.0 426.5ZM180.5 405.4C188.1 403.5 191.0 401.6 191.0 398.6C191.0 394.4 188.6 393.4 182.9 395.4C179.3 396.7 175.9 397.1 170.2 396.8C160.6 396.3 152.5 392.7 145.8 385.8C140.8 380.7 139.5 380.2 136.5 382.3C130.2 387.0 147.5 402.1 163.3 405.5C171.5 407.3 173.5 407.3 180.5 405.4ZM431.0 404.4C440.2 400.7 437.6 393.0 428.2 396.1C426.2 396.8 421.3 397.3 417.4 397.3C408.9 397.2 401.9 394.5 394.3 388.3C388.8 383.8 387.2 383.2 385.2 385.2C380.3 390.1 393.0 401.2 408.3 405.5C414.5 407.3 425.1 406.7 431.0 404.4ZM195.0 382.1C195.7 380.7 195.6 379.0 194.5 376.0C190.7 365.2 193.5 353.3 201.7 345.2C207.4 339.7 208.2 336.8 204.8 334.6C200.5 331.9 190.1 341.9 185.9 352.7C182.3 362.1 183.2 378.0 187.6 382.5C189.7 384.6 193.7 384.4 195.0 382.1ZM223.0 381.1C236.4 372.8 255.4 371.7 265.6 378.6C269.6 381.4 272.2 381.6 274.0 379.5C278.8 373.7 263.2 365.0 247.9 365.0C235.9 365.0 224.1 368.7 217.2 374.4C213.6 377.5 213.0 381.3 215.8 382.9C218.1 384.3 217.7 384.4 223.0 381.1ZM445.7 382.8C446.1 382.1 446.5 376.6 446.5 370.5C446.5 357.5 448.3 352.8 456.3 344.3C461.2 339.1 461.2 339.0 459.6 336.5C457.1 332.7 454.2 333.4 448.7 339.1C439.6 348.5 435.0 362.9 437.2 375.1C437.8 378.4 438.9 381.7 439.7 382.5C441.5 384.3 444.6 384.4 445.7 382.8ZM473.7 380.1C482.0 375.9 487.8 374.7 497.3 375.2C505.3 375.7 510.1 377.3 517.2 381.8C520.8 384.0 523.5 382.5 523.5 378.4C523.5 376.0 522.6 374.9 518.6 372.2C504.6 362.9 482.8 363.2 468.5 373.0C465.3 375.2 464.0 376.8 464.0 378.5C464.0 380.4 466.0 382.7 467.7 383.0C467.8 383.0 470.5 381.7 473.7 380.1ZM356.0 332.2C361.6 331.6 362.5 331.2 362.5 329.5C362.5 326.6 357.8 326.2 329.0 326.1C301.0 326.1 296.5 326.6 296.5 329.5C296.5 331.0 297.4 331.6 300.0 332.1C305.3 332.9 348.6 333.0 356.0 332.2ZM357.0 304.0C380.4 298.4 394.8 291.1 408.8 277.6C424.3 262.8 433.4 244.4 436.2 222.7C439.0 200.0 432.2 173.8 418.5 154.5C407.9 139.6 388.7 125.5 375.1 122.5C373.2 122.1 369.0 119.6 365.7 116.9C354.6 107.6 345.9 104.7 329.5 104.7C320.3 104.7 317.2 105.2 310.7 107.4C302.3 110.2 296.5 113.5 290.7 118.6C288.7 120.5 286.2 122.0 285.2 122.0C282.5 122.0 269.0 128.2 263.5 132.0C256.4 136.8 245.5 147.5 240.5 154.5C234.6 162.9 228.5 175.3 225.3 185.7C223.0 193.6 222.7 196.2 222.6 210.5C222.5 229.0 223.9 236.4 230.1 249.8C244.4 280.8 274.5 301.3 312.5 305.9C324.4 307.4 346.9 306.4 357.0 304.0ZM309.3 294.4C271.8 288.3 244.2 265.0 234.9 231.5C233.1 225.1 232.7 221.0 232.7 211.0C232.8 197.1 234.6 188.2 239.8 176.7C250.1 154.0 271.5 135.2 291.2 131.5C293.7 131.0 295.8 129.6 297.9 127.0C304.8 118.4 321.7 113.7 337.4 115.9C347.2 117.3 354.9 120.8 360.4 126.6C363.7 130.0 365.8 131.2 370.9 132.5C395.7 138.9 417.7 163.8 424.1 193.0C426.8 205.5 426.4 223.9 423.0 234.5C413.4 265.0 390.0 285.4 356.0 293.1C344.3 295.7 321.4 296.4 309.3 294.4ZM180.8 250.5C182.9 249.8 182.2 246.1 179.8 245.5C178.5 245.2 163.0 245.0 145.3 245.2C112.0 245.5 109.0 245.9 111.9 249.4C112.9 250.6 115.9 251.0 124.3 251.2C138.0 251.6 179.0 251.0 180.8 250.5ZM546.8 249.6C548.1 248.3 548.1 247.8 547.0 246.5C545.8 245.1 541.9 244.9 511.9 245.2C476.9 245.5 474.0 245.9 476.9 249.4C478.5 251.3 490.7 251.9 522.4 251.4C541.0 251.1 545.7 250.8 546.8 249.6ZM377.5 243.7C379.1 242.5 379.2 241.3 378.7 234.1C378.3 227.5 377.5 224.4 374.6 218.4C367.3 203.0 349.1 189.4 344.0 195.5C341.9 198.0 343.4 200.4 348.7 203.3C360.4 209.6 369.1 222.5 369.8 234.9C370.4 243.8 373.1 246.9 377.5 243.7ZM193.4 212.7C194.2 211.3 194.2 210.7 193.0 210.0C192.1 209.4 179.2 209.0 162.4 209.0C137.7 209.0 133.1 209.2 132.0 210.5C131.0 211.7 131.0 212.3 132.0 213.5C133.1 214.8 137.4 215.0 162.8 214.8C189.8 214.5 192.4 214.4 193.4 212.7ZM527.4 212.7C528.2 211.3 528.2 210.7 527.0 210.0C526.1 209.4 513.2 209.0 496.4 209.0C473.2 209.0 467.0 209.3 465.5 210.4C463.9 211.6 463.8 212.0 464.9 213.4C466.1 214.8 469.6 215.0 496.3 214.8C523.8 214.5 526.4 214.4 527.4 212.7ZM305.8 207.3C311.3 205.6 313.5 203.3 312.5 200.1C311.6 197.3 309.8 197.0 303.3 198.7C291.2 201.9 276.8 198.2 267.1 189.5C263.4 186.1 262.7 185.8 260.5 186.8C256.8 188.5 257.3 191.9 261.8 196.1C267.0 201.1 270.8 203.6 277.1 206.1C287.4 210.1 295.1 210.5 305.8 207.3ZM320.4 179.7C318.1 166.1 320.7 156.9 329.4 147.1C333.8 142.2 334.0 141.6 332.7 139.7C330.5 136.3 327.6 136.5 323.3 140.3C312.2 150.4 307.4 168.4 312.2 182.1C313.4 185.6 316.6 187.2 319.4 185.8C321.0 184.9 321.1 184.2 320.4 179.7ZM347.6 183.5C360.0 176.2 379.7 176.2 390.5 183.5C394.6 186.4 397.7 186.4 399.4 183.7C403.8 176.8 380.8 166.5 365.2 168.5C352.0 170.1 338.0 176.7 338.0 181.3C338.0 183.9 339.7 186.0 341.9 186.0C342.7 186.0 345.2 184.9 347.6 183.5Z"/><g class="bun" data-i="0"><circle class="hit" cx="330" cy="206" r="114"/></g><g class="bun" data-i="1"><circle class="hit" cx="206" cy="400" r="114"/></g><g class="bun" data-i="2"><circle class="hit" cx="454" cy="400" r="114"/></g></g>
-        <g class="lid" style="transform-box:fill-box;transform-origin:50% 50%"><path fill="currentColor" fill-rule="evenodd" d="M348.4 648.0C390.3 645.0 426.0 635.1 465.5 615.5C496.8 600.1 522.4 581.7 547.0 557.0C572.1 532.0 591.7 504.6 607.5 472.5C621.2 444.7 629.4 421.1 635.0 393.0C638.8 373.9 640.0 363.3 640.7 340.5C644.0 231.7 587.0 125.8 492.5 65.5C457.1 42.8 413.8 27.1 368.5 20.3C349.8 17.5 306.5 17.8 287.1 20.8C211.4 32.6 144.2 69.7 95.2 126.5C53.0 175.6 24.9 241.0 18.9 304.3C17.2 322.8 18.2 361.9 20.9 378.5C32.1 448.1 64.6 511.1 114.7 560.1C176.6 620.8 265.0 654.0 348.4 648.0ZM311.0 630.4C270.3 626.5 238.6 617.9 203.6 601.2C157.9 579.3 117.7 544.6 88.2 501.6C65.8 469.1 48.9 428.6 41.0 389.0C36.6 366.7 35.6 356.4 35.6 331.5C35.6 312.6 36.0 305.9 37.9 294.0C40.8 275.1 44.2 260.4 49.2 245.0C83.2 139.7 166.8 63.6 272.6 41.7C294.8 37.1 301.1 36.5 331.0 36.5C357.8 36.5 360.4 36.7 375.5 39.4C450.3 52.6 517.2 93.4 561.4 152.5C592.4 194.0 611.6 238.8 620.2 289.7C622.2 301.9 622.5 306.8 622.5 332.0C622.5 361.7 622.0 367.5 617.4 390.5C603.9 458.1 565.0 522.6 512.0 565.1C468.8 599.7 418.7 621.4 365.5 628.5C353.8 630.1 320.1 631.2 311.0 630.4ZM349.6 618.0C403.3 613.8 455.1 593.6 500.2 559.4C513.4 549.3 540.3 522.4 550.4 509.2C577.3 473.8 596.3 432.9 604.9 392.0C609.7 369.1 610.5 360.7 610.4 332.0C610.4 305.6 610.3 303.8 607.3 287.0C587.2 175.7 510.1 89.0 403.8 58.4C327.1 36.4 243.9 49.8 174.5 95.5C141.7 117.1 110.8 149.8 89.3 185.5C59.3 235.4 44.9 292.0 48.2 348.0C53.0 432.0 94.5 510.9 159.9 560.4C215.3 602.4 283.8 623.2 349.6 618.0ZM304.0 599.9C243.1 593.3 187.5 566.6 143.9 523.1C70.7 449.9 46.0 341.0 80.7 244.0C89.9 218.1 107.3 186.7 124.4 165.0C133.1 153.9 158.0 129.6 169.5 120.9C206.5 92.8 246.3 75.8 292.6 68.5C306.5 66.3 338.7 65.4 353.5 66.9C444.0 76.0 524.7 131.6 564.4 212.5C594.1 272.9 601.1 334.3 585.5 397.9C567.0 473.4 515.5 538.0 446.4 572.9C422.5 584.9 398.4 592.8 371.0 597.6C359.1 599.7 352.5 600.3 334.5 600.5C322.4 600.7 308.7 600.4 304.0 599.9ZM301.4 569.7C302.5 565.6 302.1 443.0 301.0 440.9C299.7 438.6 297.4 438.4 296.6 440.6C295.4 443.7 295.9 570.5 297.1 571.7C298.7 573.3 300.7 572.3 301.4 569.7ZM331.4 571.4C332.8 570.0 333.0 562.7 333.0 506.1C333.0 439.0 332.9 437.7 328.6 439.3C327.2 439.9 327.0 443.2 326.8 470.7C326.5 523.7 327.2 570.4 328.2 571.8C329.5 573.3 329.5 573.3 331.4 571.4ZM363.4 569.7C364.2 566.6 363.9 445.0 363.1 442.0C362.7 440.4 361.7 439.5 360.5 439.5C358.7 439.5 358.4 440.5 357.7 450.5C357.3 456.6 357.0 485.8 357.2 515.6C357.4 558.7 357.8 570.0 358.8 571.3C360.5 573.3 362.6 572.5 363.4 569.7ZM250.8 498.3C256.3 497.7 258.6 495.6 255.9 493.9C253.6 492.5 153.6 492.8 152.2 494.2C150.4 496.0 150.7 497.0 153.2 498.0C155.8 499.0 242.6 499.3 250.8 498.3ZM507.2 497.2C508.2 496.2 508.1 495.7 506.9 494.5C505.6 493.2 498.8 493.0 455.8 493.0C428.6 492.9 405.5 493.2 404.6 493.6C401.8 494.7 403.2 497.4 407.0 498.1C408.9 498.5 432.0 498.7 458.2 498.6C495.0 498.5 506.2 498.2 507.2 497.2ZM250.5 467.1C255.6 466.6 256.5 466.2 256.5 464.5C256.5 462.6 255.6 462.4 244.0 461.7C237.1 461.3 209.6 461.1 182.9 461.2C143.0 461.4 134.0 461.8 132.6 462.9C130.0 465.0 131.2 466.4 136.1 467.1C142.1 467.9 243.0 467.9 250.5 467.1ZM522.5 467.2C526.6 466.6 527.5 466.1 527.5 464.5C527.5 462.8 526.6 462.4 521.5 461.9C513.8 461.0 421.0 461.1 411.0 461.9C404.4 462.4 403.5 462.7 403.5 464.5C403.5 466.2 404.4 466.6 408.5 467.1C415.4 467.9 516.4 468.0 522.5 467.2ZM255.4 435.4C257.8 434.5 257.3 432.1 254.4 431.0C252.9 430.4 226.6 430.0 186.6 430.0C132.5 430.0 121.1 430.2 119.5 431.4C117.9 432.6 117.8 433.0 118.9 434.4C120.1 435.8 126.9 436.0 187.0 436.0C223.8 436.0 254.5 435.7 255.4 435.4ZM541.0 434.5C544.2 430.6 542.4 430.5 474.7 430.2C438.8 430.0 408.0 430.2 406.2 430.5C404.0 430.9 403.0 431.6 403.0 433.0C403.0 434.0 403.6 435.1 404.2 435.3C404.9 435.6 435.7 435.9 472.6 435.9C532.0 436.0 539.9 435.8 541.0 434.5ZM151.0 334.3C151.0 300.7 150.7 272.5 150.4 271.6C149.7 269.7 147.9 269.5 146.2 271.2C145.3 272.1 145.0 287.3 145.0 333.6C145.0 389.1 145.2 395.0 146.6 396.5C148.0 397.9 148.5 397.9 149.7 396.8C150.8 395.6 151.0 384.9 151.0 334.3ZM513.4 396.4C514.8 395.0 515.0 388.0 515.0 333.6C515.0 280.3 514.8 272.1 513.5 271.0C512.3 270.0 511.7 270.0 510.5 271.0C509.2 272.1 509.0 280.3 509.0 333.9C509.0 380.6 509.3 395.9 510.2 396.8C511.7 398.3 511.5 398.3 513.4 396.4ZM120.1 389.0C120.5 384.9 120.7 359.9 120.7 333.5C120.7 307.1 120.5 282.1 120.1 278.0C119.6 271.4 119.3 270.5 117.5 270.5C116.0 270.5 115.4 271.4 114.8 274.5C113.7 280.9 113.9 391.5 115.0 394.5C115.7 396.2 116.6 397.0 117.8 396.8C119.2 396.5 119.6 395.0 120.1 389.0ZM181.5 392.8C181.8 390.4 182.0 362.3 181.8 330.3C181.5 269.9 181.3 267.8 177.5 271.0C176.2 272.1 176.0 279.6 176.0 334.0C176.0 367.9 176.3 396.0 176.7 396.3C177.0 396.7 178.1 397.0 179.1 397.0C180.4 397.0 181.0 395.9 181.5 392.8ZM483.8 334.4C484.0 279.3 483.8 272.1 482.5 271.0C478.6 267.8 478.5 269.8 478.2 332.3C478.1 365.4 478.2 393.5 478.5 394.8C478.9 396.5 479.7 397.0 481.3 396.8L483.5 396.5L483.8 334.4ZM545.2 392.5C546.1 387.4 546.1 281.0 545.2 275.0C544.6 271.4 544.1 270.5 542.5 270.5C540.9 270.5 540.4 271.5 539.7 275.5C538.6 281.9 539.2 394.1 540.3 395.8C542.0 398.3 544.4 396.6 545.2 392.5ZM383.3 354.7C392.0 351.1 397.9 341.8 398.0 331.6C398.0 320.1 393.5 312.4 383.8 307.6L378.6 305.0L329.5 305.0L280.4 305.0L275.1 307.7C264.3 313.0 258.7 326.1 262.0 338.0C263.7 344.2 268.5 350.6 273.7 353.7L278.5 356.5L325.5 357.0C351.4 357.3 373.9 357.3 375.5 357.1C377.1 356.9 380.6 355.8 383.3 354.7ZM279.6 341.9C271.1 335.2 272.7 322.6 282.7 318.4C285.3 317.3 294.8 317.0 329.7 317.0C370.6 317.0 373.8 317.2 377.7 318.9C382.5 321.1 385.3 325.6 385.3 331.1C385.3 335.6 382.0 341.2 378.5 342.8C376.6 343.7 362.7 344.0 329.1 344.0C283.1 344.0 282.2 344.0 279.6 341.9ZM255.6 236.6C257.2 235.4 257.3 234.9 256.2 233.8C255.2 232.8 241.9 232.4 189.1 232.2C147.1 232.1 122.3 232.3 120.6 233.0C117.6 234.1 117.1 236.6 119.8 237.3C120.7 237.6 151.2 237.8 187.6 237.9C243.5 238.0 253.9 237.8 255.6 236.6ZM541.2 236.2C542.3 235.1 542.2 234.6 540.6 233.4C538.9 232.2 528.4 232.0 473.1 232.0C437.0 232.0 406.5 232.3 405.2 232.6C402.8 233.3 402.2 236.5 404.2 237.3C404.9 237.6 435.7 237.8 472.7 237.7C526.8 237.5 540.2 237.2 541.2 236.2ZM301.0 227.1C302.1 224.9 302.5 103.7 301.4 98.1C300.9 95.6 300.3 95.0 298.6 95.2L296.5 95.5L296.2 160.9C296.0 225.5 296.1 229.0 299.1 229.0C299.6 229.0 300.4 228.1 301.0 227.1ZM332.0 227.1C333.1 225.0 333.5 101.3 332.4 97.2C331.9 95.6 331.1 95.0 329.6 95.2L327.5 95.5L327.2 160.9C327.0 225.5 327.1 229.0 330.1 229.0C330.6 229.0 331.4 228.1 332.0 227.1ZM363.1 225.9C364.0 222.8 364.0 102.5 363.1 98.5C362.7 96.4 361.9 95.5 360.5 95.5C358.7 95.5 358.4 96.5 357.7 106.5C357.3 112.5 357.0 141.9 357.2 171.6C357.5 215.7 357.8 226.1 358.9 227.4C360.7 229.5 362.3 229.0 363.1 225.9ZM252.5 206.2C257.5 205.3 258.5 202.4 254.3 201.3C252.8 200.9 225.1 200.5 192.9 200.5C144.1 200.5 134.0 200.7 132.6 201.9C130.2 203.9 131.1 205.4 135.1 206.1C139.9 207.0 247.6 207.0 252.5 206.2ZM523.0 206.2C526.6 205.6 527.5 205.1 527.5 203.5C527.5 201.6 526.6 201.5 509.5 200.7C487.6 199.7 404.9 200.7 403.6 202.0C402.0 203.6 403.8 205.9 407.2 206.3C412.9 207.0 518.3 206.9 523.0 206.2ZM246.5 175.1C255.6 174.6 256.5 174.3 256.5 172.5C256.5 170.8 255.6 170.4 249.5 169.7C245.7 169.3 222.3 169.1 197.7 169.2C159.6 169.5 152.8 169.7 152.0 171.0C150.3 173.7 152.9 174.9 161.3 175.3C176.1 175.9 236.3 175.8 246.5 175.1ZM507.0 174.4C508.8 172.6 507.0 170.3 503.2 169.6C498.3 168.8 414.8 169.0 408.5 169.8C404.4 170.4 403.5 170.9 403.5 172.5C403.5 174.3 404.4 174.5 414.5 175.1C433.3 176.1 505.8 175.6 507.0 174.4Z"/></g>
-      </g>
-    </svg>
-    <button class="enter mono" type="button"><span class="br">Tap to enter</span></button>
+<header class="top">
+  <div class="top-left">
+    <a class="logo-pill glass" href="#home" aria-label="Angry Bao home"><svg viewBox="0 0 2178 423" aria-hidden="true"><use href="#lockup"/></svg></a>
+    <nav class="nav-pill glass" aria-label="Main">
+      <a href="#worlds">Worlds</a>
+      <a href="#shop">Shop</a>
+      <a href="#studio">Studio</a>
+    </nav>
   </div>
-</div>
-<div class="page">
-  <header class="top mono">
-    <span class="br">Worldbuilding studio</span>
-    <span class="br loc" aria-label="Time in London">London <b id="clock"></b></span>
-  </header>
+  <div class="clock mono br" aria-label="Time in London">London <b id="clock">--:--</b></div>
+</header>
 
-  <main class="mid">
-    <div class="hero">
-      <h1 style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Angry Bao</h1>
-      <svg class="mark" id="mark" viewBox="20 14 978 636" role="img" aria-label="The Angry Bao mark"><defs><linearGradient id="shM" gradientUnits="userSpaceOnUse" spreadMethod="reflect" x1="0" y1="0" x2="300" y2="150"><stop offset="0" stop-color="#EFE2D0"/><stop offset=".18" stop-color="#EFE2D0"/><stop offset=".36" stop-color="#EFE2D0"/><stop offset=".52" stop-color="#EFE2D0"/><stop offset=".7" stop-color="#EFE2D0"/><stop offset=".86" stop-color="#EFE2D0"/><stop offset="1" stop-color="#EFE2D0"/></linearGradient></defs>
-        <path fill="url(#shM)" fill-rule="evenodd" d="M766 637L850 636L861 633C876 629 884 626 895 620C921 606 945 582 958 555C978 516 986 481 986 436C986 399 981 368 967 330C954 293 934 256 908 224C879 189 841 154 800 127C770 107 744 95 702 79C688 74 676 68 666 60C642 42 620 31 595 26C581 23 567 24 544 28C521 33 507 33 482 28C455 22 437 23 413 30C394 35 386 39 366 52C343 67 339 69 314 76C296 81 259 98 231 114C156 156 94 219 59 288C51 306 46 318 41 336C31 370 28 400 32 432C38 485 59 538 90 576C115 607 142 624 184 635C190 636 217 636 403 637C520 637 630 637 648 637C667 637 719 637 766 637ZM197 603C180 601 156 591 141 581C132 574 111 552 106 544C104 541 100 534 98 530C92 520 78 490 74 477C66 451 64 432 64 406C64 379 67 359 75 334C82 314 100 280 113 262C117 256 135 233 137 232C137 232 142 227 146 222C166 201 188 183 212 165C254 135 290 117 333 105C340 103 348 101 350 100C353 99 362 93 371 87C391 74 398 70 411 65C424 60 429 58 442 57C455 56 466 57 480 61C494 64 502 65 517 65C526 64 534 63 542 62C561 58 567 57 579 57C601 59 619 66 653 89C670 101 681 106 707 116C741 128 787 156 822 185C834 195 862 222 871 232C880 243 895 264 902 274C913 292 915 295 922 308C938 341 948 375 952 410C959 462 946 521 922 553C910 568 893 584 880 591C873 594 855 601 846 602C841 604 785 604 522 604C347 604 201 603 197 603Z"/>
-        <path fill="url(#shM)" d="M274 260C291 240 316 218 338 205C341 203 354 196 366 190C379 184 393 176 400 172C422 157 439 135 449 110C451 106 454 96 454 94C454 93 452 95 445 103C436 113 418 129 407 136C402 139 385 148 370 156C333 174 326 179 309 195C296 209 288 219 279 236C271 251 263 271 266 271C266 271 270 266 274 260ZM769 270C759 247 752 233 745 223C729 199 705 179 678 166C638 148 622 137 603 118C595 111 588 103 586 100C583 95 579 93 580 97C589 126 599 142 619 162C632 173 642 180 671 195C707 213 714 218 733 235C744 244 753 254 763 266C767 271 770 273 769 270Z"/>
-        <g class="eyes" id="eyes"><g class="lids"><path fill="url(#shM)" d="M402 483C422 479 441 472 445 466C449 462 449 457 446 455C443 453 422 445 409 440C405 439 393 435 384 431C374 427 361 423 356 420C340 415 277 389 268 385C251 378 247 377 241 380C235 383 233 392 237 402C241 411 251 425 264 438C286 462 320 480 352 485C364 487 388 486 402 483ZM691 484C720 477 748 462 768 442C786 424 798 405 799 392C799 386 799 385 796 382C794 380 792 379 790 378C785 378 782 379 760 389C741 397 711 410 698 415C692 417 684 420 680 422C675 424 668 426 664 428C659 430 648 434 639 437C630 440 620 444 616 445C613 446 607 448 603 450C580 458 586 469 619 479C634 485 645 486 666 486C677 485 686 485 691 484Z"/></g></g>
-      </svg>
-      <svg class="word" viewBox="30 26 2306 94" aria-hidden="true"><defs><linearGradient id="shW" gradientUnits="userSpaceOnUse" spreadMethod="reflect" x1="0" y1="0" x2="300" y2="150"><stop offset="0" stop-color="#EFE2D0"/><stop offset=".18" stop-color="#EFE2D0"/><stop offset=".36" stop-color="#EFE2D0"/><stop offset=".52" stop-color="#EFE2D0"/><stop offset=".7" stop-color="#EFE2D0"/><stop offset=".86" stop-color="#EFE2D0"/><stop offset="1" stop-color="#EFE2D0"/></linearGradient></defs><path fill="url(#shW)" fill-rule="evenodd" d="M2158 115C2174 110 2190 98 2194 86C2197 78 2197 68 2194 60C2190 50 2175 38 2160 33C2134 25 2101 31 2084 47C2077 55 2074 59 2073 69C2071 83 2075 94 2087 102C2095 109 2108 114 2119 116C2127 117 2152 116 2158 115ZM669 113C679 110 679 110 680 113C680 116 682 116 688 115L693 114L693 91L693 69L686 69C682 69 669 69 656 69L634 69L634 76L634 84L653 84L672 84L672 88C672 92 672 93 669 94C663 97 654 98 640 98C624 98 617 97 609 92C602 87 599 83 598 76C597 62 608 51 626 48C635 46 653 47 660 50C669 53 678 58 680 61C681 62 682 63 682 63C684 63 685 60 686 50L686 41L679 38C666 31 658 30 639 30C623 30 622 30 614 32C602 37 596 40 589 46C580 55 579 60 579 74C579 83 579 85 581 89C585 98 597 108 608 112C618 115 624 116 643 116C658 115 663 115 669 113ZM1923 115C1923 114 1922 113 1921 112C1920 111 1914 100 1907 88C1900 77 1889 60 1883 50L1872 32L1861 32L1850 32L1845 40C1838 53 1827 69 1812 92C1804 103 1798 113 1798 114C1798 115 1802 115 1808 115L1819 115L1824 107L1830 99L1860 99L1890 100L1895 106C1901 116 1900 116 1912 115C1918 115 1922 115 1923 115ZM63 107L68 100L97 99L127 99L132 107L137 115L149 115C156 115 161 115 161 114C161 114 158 109 155 104C147 92 141 83 123 54L109 32L98 32L86 32L84 36C83 39 78 47 73 54C67 62 60 74 55 82C50 89 44 99 40 104C37 109 34 114 34 114C34 115 39 115 46 115L58 115L63 107ZM330 85C330 69 330 56 331 56C332 56 341 64 363 83C370 89 381 98 388 104L400 115L412 115L422 114L423 73L423 32L412 32L402 32L402 62C402 78 402 91 402 92C401 92 397 89 393 85C389 81 382 74 377 70C372 66 360 56 350 48L332 32L320 32L308 32L308 72C308 94 308 113 308 114C309 115 312 115 319 115L330 114L330 85ZM873 101L874 88L893 87L912 87L918 93C920 97 926 103 930 107L937 115L951 115C958 115 964 115 964 114C964 114 960 110 955 104C943 92 937 85 937 85C937 84 940 83 943 81C951 78 955 73 957 66C959 61 959 56 957 50C955 45 947 38 941 35L936 32L894 32C871 32 852 33 852 33C852 34 852 52 852 74L852 115L862 115L873 115L873 101ZM1183 99L1183 83L1208 58C1222 45 1233 33 1233 33C1233 32 1227 32 1220 32L1207 32L1196 44C1190 50 1182 58 1178 62L1172 68L1167 63C1164 60 1156 52 1149 45L1137 32L1124 32C1117 32 1111 32 1111 33C1111 33 1122 45 1136 58L1161 83L1161 99L1161 115L1172 115L1183 115L1183 99ZM1632 113C1643 110 1649 102 1649 91C1649 84 1648 81 1644 76C1641 73 1641 73 1642 71C1645 66 1646 63 1646 57C1646 46 1643 40 1633 35L1628 32L1584 32L1542 32L1541 73C1541 95 1541 114 1542 114C1542 115 1561 115 1584 115C1619 115 1628 115 1632 113ZM1571 98L1561 98L1560 90C1560 85 1560 82 1561 82C1562 81 1576 81 1594 81C1625 81 1626 81 1628 83C1632 87 1630 95 1623 98C1620 99 1593 99 1571 98ZM2118 96C2100 92 2093 83 2096 69C2097 64 2098 63 2102 59C2108 53 2112 51 2121 50C2130 48 2138 48 2147 49C2165 53 2174 61 2174 74C2174 90 2160 98 2134 98C2128 98 2120 97 2118 96ZM78 83C77 82 79 79 82 75C84 71 89 64 92 59C95 54 98 50 98 50C99 50 100 51 101 53C102 54 106 62 110 69C114 76 118 83 117 83C117 84 78 84 78 83ZM1841 83C1841 81 1860 51 1861 51C1862 51 1865 54 1867 59C1870 64 1874 71 1877 75C1880 79 1882 83 1881 83C1881 84 1872 84 1861 84C1846 84 1841 84 1841 83ZM875 70C874 70 874 55 874 50C874 50 882 49 902 49C926 50 931 50 934 51C942 55 940 65 931 69C927 70 876 72 875 70ZM1561 64C1560 64 1560 60 1560 56L1560 50L1589 49C1605 49 1620 49 1621 50C1628 51 1630 61 1624 64C1621 65 1562 66 1561 64ZM2284 47L2284 36L2288 36C2291 36 2292 36 2292 34C2292 32 2291 32 2281 32C2272 32 2270 33 2270 34C2270 35 2271 36 2273 36L2277 36L2277 46C2277 52 2277 57 2278 57C2278 58 2280 58 2281 58C2283 58 2284 57 2284 47ZM2306 51C2306 47 2306 44 2306 43C2307 43 2308 44 2309 47C2313 57 2313 58 2316 58C2318 58 2319 57 2322 49C2323 45 2325 42 2325 42C2326 42 2326 45 2326 50C2326 57 2327 58 2329 58L2332 58L2332 45L2332 32L2327 32C2323 32 2323 33 2322 35C2320 42 2317 48 2316 49C2315 49 2315 48 2314 47C2314 46 2313 42 2311 39L2309 32L2304 32L2300 32L2300 45L2300 58L2303 58C2305 58 2306 57 2306 51Z"/></svg>
-      <div class="soon">
-        <span class="pill mono"><span class="dot" aria-hidden="true"></span>Coming soon</span>
-        <p class="copy"><span>Building story-driven worlds.</span><span>Games. Collectibles. Merch.</span></p>
+<main id="main">
+
+<!-- ================= HOME ================= -->
+<section class="view" data-view="home" data-palette="home">
+  <div class="stage">
+    <div class="stage-center">
+      <div class="hero">
+        <h1 class="sr">Angry Bao</h1>
+        <svg class="hero-mark" id="heroMark" viewBox="20 14 978 636" role="img" aria-label="The Angry Bao mark">
+          <path fill="currentColor" fill-rule="evenodd" d="M766 637L850 636L861 633C876 629 884 626 895 620C921 606 945 582 958 555C978 516 986 481 986 436C986 399 981 368 967 330C954 293 934 256 908 224C879 189 841 154 800 127C770 107 744 95 702 79C688 74 676 68 666 60C642 42 620 31 595 26C581 23 567 24 544 28C521 33 507 33 482 28C455 22 437 23 413 30C394 35 386 39 366 52C343 67 339 69 314 76C296 81 259 98 231 114C156 156 94 219 59 288C51 306 46 318 41 336C31 370 28 400 32 432C38 485 59 538 90 576C115 607 142 624 184 635C190 636 217 636 403 637C520 637 630 637 648 637C667 637 719 637 766 637ZM197 603C180 601 156 591 141 581C132 574 111 552 106 544C104 541 100 534 98 530C92 520 78 490 74 477C66 451 64 432 64 406C64 379 67 359 75 334C82 314 100 280 113 262C117 256 135 233 137 232C137 232 142 227 146 222C166 201 188 183 212 165C254 135 290 117 333 105C340 103 348 101 350 100C353 99 362 93 371 87C391 74 398 70 411 65C424 60 429 58 442 57C455 56 466 57 480 61C494 64 502 65 517 65C526 64 534 63 542 62C561 58 567 57 579 57C601 59 619 66 653 89C670 101 681 106 707 116C741 128 787 156 822 185C834 195 862 222 871 232C880 243 895 264 902 274C913 292 915 295 922 308C938 341 948 375 952 410C959 462 946 521 922 553C910 568 893 584 880 591C873 594 855 601 846 602C841 604 785 604 522 604C347 604 201 603 197 603Z"/>
+          <path fill="currentColor" d="M274 260C291 240 316 218 338 205C341 203 354 196 366 190C379 184 393 176 400 172C422 157 439 135 449 110C451 106 454 96 454 94C454 93 452 95 445 103C436 113 418 129 407 136C402 139 385 148 370 156C333 174 326 179 309 195C296 209 288 219 279 236C271 251 263 271 266 271C266 271 270 266 274 260ZM769 270C759 247 752 233 745 223C729 199 705 179 678 166C638 148 622 137 603 118C595 111 588 103 586 100C583 95 579 93 580 97C589 126 599 142 619 162C632 173 642 180 671 195C707 213 714 218 733 235C744 244 753 254 763 266C767 271 770 273 769 270Z"/>
+          <g class="eyes" id="eyes"><g class="lids"><path fill="currentColor" d="M402 483C422 479 441 472 445 466C449 462 449 457 446 455C443 453 422 445 409 440C405 439 393 435 384 431C374 427 361 423 356 420C340 415 277 389 268 385C251 378 247 377 241 380C235 383 233 392 237 402C241 411 251 425 264 438C286 462 320 480 352 485C364 487 388 486 402 483ZM691 484C720 477 748 462 768 442C786 424 798 405 799 392C799 386 799 385 796 382C794 380 792 379 790 378C785 378 782 379 760 389C741 397 711 410 698 415C692 417 684 420 680 422C675 424 668 426 664 428C659 430 648 434 639 437C630 440 620 444 616 445C613 446 607 448 603 450C580 458 586 469 619 479C634 485 645 486 666 486C677 485 686 485 691 484Z"/></g></g>
+        </svg>
+        <svg class="hero-word" viewBox="0 0 2306 94" aria-hidden="true"><use href="#word"/></svg>
+        <nav class="hero-line mono br" aria-label="What we make"><a href="#worlds">Games</a> · <a href="#shop">Collectibles</a> · <a href="#shop">Merch</a></nav>
       </div>
-      <form class="signup" id="signup" method="post" target="signup-sink" novalidate>
-        <label for="signup-email" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Email address</label>
-        <div class="signup-row">
-          <input id="signup-email" name="email_address" type="email" placeholder="Your email" autocomplete="email" required>
-          <button type="submit">Notify me</button>
-        </div>
-        <div class="note mono" id="signup-note" aria-live="polite"><span class="fine">One email when we launch. Unsubscribe any time.</span></div>
-      </form>
-      <iframe name="signup-sink" title="Sign-up" hidden></iframe>
     </div>
-  </main>
+    <div class="stage-foot">
+      <nav class="strip glass" aria-label="Worlds" data-strip>
+        <a class="thumb on" href="#home" data-preview="home" aria-label="Angry Bao"><svg class="bao" viewBox="0 0 978 636"><use href="#bao"/></svg></a>
+        <a class="thumb" href="#dead-of-knight" data-preview="dok" aria-label="Dead of Knight"><svg viewBox="0 0 200 200"><use href="#e-dok"/></svg></a>
+        <a class="thumb" href="#evergreen" data-preview="ever" aria-label="Evergreen"><svg viewBox="0 0 200 200"><use href="#e-ever"/></svg></a>
+        <a class="thumb" href="#triple-six" data-preview="six" aria-label="Triple Six"><svg viewBox="0 0 200 200"><use href="#e-six"/></svg></a>
+      </nav>
+      <div class="card" id="homeCard" aria-live="polite">
+        <div class="card-body glass swap">
+          <h2 data-f="title">Angry Bao</h2>
+          <p data-f="text">Angry Bao is an independent worldbuilding studio. We build story-driven worlds, then make games, collectibles and merch from them.</p>
+          <div class="rows mono" data-f="rows"></div>
+          <span class="tag" data-f="tag">Now building</span>
+        </div>
+        <a class="cta swap" data-f="cta" href="#shop"><span data-f="ctaLabel">Be first in</span><span class="mono br" data-f="ctaVal">Free</span></a>
+      </div>
+    </div>
+  </div>
+</section>
 
-  <footer class="bot mono">
-    <span>© 2026 Angry Bao</span>
-    <span class="worlds"><span style="color:var(--cream-3)">Now building</span><span class="br">Dead of Knight</span><span class="br">Evergreen</span><span class="br">Triple Six</span></span>
-  </footer>
-</div>
+<!-- ================= WORLDS INDEX ================= -->
+<section class="view" data-view="worlds" data-palette="home" hidden>
+  <div class="stage" style="grid-template-rows:auto 1fr auto">
+    <div class="mono br dim" style="text-align:center">The worlds</div>
+    <div class="stage-center">
+      <div class="index">
+        <a href="#dead-of-knight" data-preview="dok"><span class="name">Dead of Knight</span><span class="meta mono"><span class="br">Video game</span><span>Mobile · First title</span></span></a>
+        <a href="#evergreen" data-preview="ever"><span class="name">Evergreen</span><span class="meta mono"><span class="br">Tabletop RPG</span><span>Stories · Collectibles</span></span></a>
+        <a href="#triple-six" data-preview="six"><span class="name">Triple Six</span><span class="meta mono"><span class="br">Card and dice game</span><span>Manga · Anime</span></span></a>
+      </div>
+    </div>
+    <div class="mono dim" style="text-align:center">The first three, all in development. More to come.</div>
+  </div>
+</section>
+
+<!-- ================= DEAD OF KNIGHT ================= -->
+<section class="view" data-view="dead-of-knight" data-palette="dok" hidden>
+  <div class="stage">
+    <div class="stage-center">
+      <div class="emblem-wrap">
+        <svg class="emblem tilt" viewBox="0 0 200 200" role="img" aria-label="Dead of Knight emblem: a sword through a moon"><use href="#e-dok"/></svg>
+        <div class="scroll-hint mono"><span class="br">Scroll</span><i></i></div>
+      </div>
+    </div>
+    <div class="stage-foot">
+      <nav class="strip glass" aria-label="Worlds">
+        <a class="thumb" href="#home" aria-label="Angry Bao home"><svg class="bao" viewBox="0 0 978 636"><use href="#bao"/></svg></a>
+        <a class="thumb on" href="#dead-of-knight" aria-label="Dead of Knight" aria-current="page"><svg viewBox="0 0 200 200"><use href="#e-dok"/></svg></a>
+        <a class="thumb" href="#evergreen" aria-label="Evergreen"><svg viewBox="0 0 200 200"><use href="#e-ever"/></svg></a>
+        <a class="thumb" href="#triple-six" aria-label="Triple Six"><svg viewBox="0 0 200 200"><use href="#e-six"/></svg></a>
+      </nav>
+      <div class="card">
+        <div class="card-body glass">
+          <h1 class="card-h" style="font-family:var(--wide);font-size:15px;letter-spacing:.14em;line-height:1.4;text-transform:uppercase">Dead of Knight</h1>
+          <p>The dead are rising and the line won't hold. One knight charges into the dark to buy the living time. Cut down the horde, save who you can, and make your last stand count. One day they will sing songs about you.</p>
+          <div class="rows mono">
+            <div class="row"><span class="k">Format</span><span class="br">Run-and-slash</span></div>
+            <div class="row"><span class="k">Platform</span><span class="br">Mobile</span></div>
+          </div>
+          <span class="tag">First run playable</span>
+        </div>
+        <a class="cta" href="#updates-dok" data-jump><span>Follow development</span><span class="mono br">Mobile</span></a>
+        <a class="cta" href="https://dead-of-knight-playtest.netlify.app" target="_blank" rel="noopener"><span>Play the playtest</span><span class="mono br">Landscape</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="page"><div class="wrap">
+    <div class="sec">
+      <div>
+        <div class="kicker mono"><span class="br">Video game</span><span class="br">First-person</span><span class="br">The first Angry Bao game</span></div>
+        <p class="lede">Two thousand metres, one knight, no way back. And this is only the first run.</p>
+      </div>
+      <div class="facts mono-k">
+        <div class="fact"><span class="mono dim">First run</span><span class="v">2,000 m to the chapel, six to ten minutes</span></div>
+        <div class="fact"><span class="mono dim">Combat</span><span class="v">Swipe to strike, parry and chain kills</span></div>
+        <div class="fact"><span class="mono dim">The boss</span><span class="v">Morvael, the Devourer</span></div>
+        <div class="fact"><span class="mono dim">The arsenal</span><span class="v">Fists, swords, maces and axes, from common to rare</span></div>
+        <div class="fact"><span class="mono dim">Platform</span><span class="v">iOS and Android, played in landscape</span></div>
+        <div class="fact"><span class="mono dim">Status</span><span class="v">First run playable. Phone playtests next. The full game will be longer and go deeper.</span></div>
+      </div>
+    </div>
+    <div class="sec trio">
+      <article><span class="mono dim br">The road</span><h3>Keep running</h3><p>The knight never stops moving. The dead come from the dark on both sides, and every swing has to land on the move.</p></article>
+      <article><span class="mono dim br">The blade</span><h3>Timing over button mashing</h3><p>Aim each swipe at head, body or legs. Early, perfect or late changes what happens next. Parry, clinch, and keep the chain alive.</p></article>
+      <article><span class="mono dim br">The chapel</span><h3>The Devourer</h3><p>At the end of the road, a four-phase fight against Morvael, the demon waiting in the chapel. Before you face it, you pull a fallen hero&rsquo;s sword from the dead. That is the blade that ends it.</p></article>
+    </div>
+    <div class="sec split" id="updates-dok">
+      <h2 class="h-sec">Join the first playtest</h2>
+      <div class="body-copy" style="gap:22px">
+        <p hidden>The first 100 to sign up get a playtest invite and a limited-edition armour set, as a thank you.</p>
+        <form class="signup" data-signup method="post" target="signup-sink" novalidate><label class="sr" for="em-dok">Email address</label><div class="signup-row glass"><input id="em-dok" name="email_address" type="email" placeholder="you@example.com" autocomplete="email" required><button type="submit">Notify me</button></div><div class="note mono" aria-live="polite"></div></form>
+        <div style="display:grid;gap:10px;max-width:460px">
+          <p>Already invited? Play the current build in your phone's browser, held sideways with the sound on, then send your report from inside the game.</p>
+          <a class="cta" href="https://dead-of-knight-playtest.netlify.app" target="_blank" rel="noopener"><span>Play the playtest</span><span class="mono br">Mobile · Landscape</span></a>
+        </div>
+      </div>
+    </div>
+  </div></div>
+</section>
+
+<!-- ================= EVERGREEN ================= -->
+<section class="view" data-view="evergreen" data-palette="ever" hidden>
+  <div class="stage">
+    <div class="stage-center">
+      <div class="emblem-wrap">
+        <svg class="emblem tilt" viewBox="0 0 200 200" role="img" aria-label="Evergreen emblem: a chevron tree inside a ranging ring"><use href="#e-ever"/></svg>
+        <div class="scroll-hint mono"><span class="br">Scroll</span><i></i></div>
+      </div>
+    </div>
+    <div class="stage-foot">
+      <nav class="strip glass" aria-label="Worlds">
+        <a class="thumb" href="#home" aria-label="Angry Bao home"><svg class="bao" viewBox="0 0 978 636"><use href="#bao"/></svg></a>
+        <a class="thumb" href="#dead-of-knight" aria-label="Dead of Knight"><svg viewBox="0 0 200 200"><use href="#e-dok"/></svg></a>
+        <a class="thumb on" href="#evergreen" aria-label="Evergreen" aria-current="page"><svg viewBox="0 0 200 200"><use href="#e-ever"/></svg></a>
+        <a class="thumb" href="#triple-six" aria-label="Triple Six"><svg viewBox="0 0 200 200"><use href="#e-six"/></svg></a>
+      </nav>
+      <div class="card">
+        <div class="card-body glass">
+          <h1 style="font-family:var(--wide);font-size:15px;letter-spacing:.14em;line-height:1.4;text-transform:uppercase">Evergreen</h1>
+          <p>Soldiers hold a collapsing galaxy against the Void, a horrifying force that erases memory, identity and existence.</p>
+          <div class="rows mono">
+            <div class="row"><span class="k">Format</span><span class="br">Tabletop RPG</span></div>
+            <div class="row"><span class="k">Domains</span><span class="br">Land · Air · Space</span></div>
+          </div>
+          <span class="tag">In development</span>
+        </div>
+        <a class="cta" href="#updates-ever" data-jump><span>Follow development</span><span class="mono br">TTRPG</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="page"><div class="wrap">
+    <div class="sec">
+      <div>
+        <div class="kicker mono"><span class="br">Tactical tabletop RPG</span><span class="br">Squad scale</span><span class="br">Stories and collectibles</span></div>
+        <p class="lede">The Void doesn't kill you. It makes sure you were never there. So every soldier writes everything down.</p>
+      </div>
+      <div class="facts">
+        <div class="fact"><span class="mono dim">Format</span><span class="v">Narrative tactical tabletop RPG</span></div>
+        <div class="fact"><span class="mono dim">Scale</span><span class="v">Squad level, high lethality</span></div>
+        <div class="fact"><span class="mono dim">Domains</span><span class="v">Land, Air and Space</span></div>
+        <div class="fact"><span class="mono dim">The enemy</span><span class="v">The Void, from the smallest raids to planet-class threats</span></div>
+        <div class="fact"><span class="mono dim">Beyond the table</span><span class="v">Short stories, field diaries, collectibles and more</span></div>
+        <div class="fact"><span class="mono dim">Status</span><span class="v">In development</span></div>
+      </div>
+    </div>
+    <div class="sec trio">
+      <article><span class="mono dim br">Hope</span><h3>Hope is a resource</h3><p>Squads run on Hope and the bonds between soldiers. Lose them and the Void finds a way in.</p></article>
+      <article><span class="mono dim br">Memory</span><h3>Field journals</h3><p>Every soldier keeps a journal, about their squad, their battles and each other as much as themselves. It is how the setting is told, and how characters survive being forgotten.</p></article>
+      <article><span class="mono dim br">Theatres</span><h3>Land, Air, Space</h3><p>Three fronts, one war. Squads on the ground, pilots in the air and crews in the dark of space, each with their own skills, and each other to rely on.</p></article>
+    </div>
+    <div class="sec split" id="updates-ever">
+      <h2 class="h-sec">Read the first field diary when it&rsquo;s out</h2>
+      <form class="signup" data-signup method="post" target="signup-sink" novalidate><label class="sr" for="em-ever">Email address</label><div class="signup-row glass"><input id="em-ever" name="email_address" type="email" placeholder="you@example.com" autocomplete="email" required><button type="submit">Notify me</button></div><div class="note mono" aria-live="polite"></div></form>
+    </div>
+  </div></div>
+</section>
+
+<!-- ================= TRIPLE SIX ================= -->
+<section class="view" data-view="triple-six" data-palette="six" hidden>
+  <div class="stage">
+    <div class="stage-center">
+      <div class="emblem-wrap">
+        <svg class="emblem tilt" viewBox="0 0 200 200" role="img" aria-label="Triple Six emblem: three sixes inside a hexagon"><use href="#e-six"/></svg>
+        <div class="scroll-hint mono"><span class="br">Scroll</span><i></i></div>
+      </div>
+    </div>
+    <div class="stage-foot">
+      <nav class="strip glass" aria-label="Worlds">
+        <a class="thumb" href="#home" aria-label="Angry Bao home"><svg class="bao" viewBox="0 0 978 636"><use href="#bao"/></svg></a>
+        <a class="thumb" href="#dead-of-knight" aria-label="Dead of Knight"><svg viewBox="0 0 200 200"><use href="#e-dok"/></svg></a>
+        <a class="thumb" href="#evergreen" aria-label="Evergreen"><svg viewBox="0 0 200 200"><use href="#e-ever"/></svg></a>
+        <a class="thumb on" href="#triple-six" aria-label="Triple Six" aria-current="page"><svg viewBox="0 0 200 200"><use href="#e-six"/></svg></a>
+      </nav>
+      <div class="card">
+        <div class="card-body glass">
+          <h1 style="font-family:var(--wide);font-size:15px;letter-spacing:.14em;line-height:1.4;text-transform:uppercase">Triple Six</h1>
+          <p>The night the sky tore open, you lost the one you love. The Death God offers a deal: collect 666 souls and you can have them back. Hunt demons across five fractured realms, face rival Hunters bound by the same contract, and try to win without losing yourself.</p>
+          <div class="rows mono">
+            <div class="row"><span class="k">Format</span><span class="br">Card &amp; dice</span></div>
+            <div class="row"><span class="k">Demons</span><span class="br">665</span></div>
+          </div>
+          <span class="tag">In development</span>
+        </div>
+        <a class="cta" href="#updates-six" data-jump><span>Follow development</span><span class="mono br">TCG</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="page"><div class="wrap">
+    <div class="sec">
+      <div>
+        <div class="kicker mono"><span class="br">Collectible card and dice game</span><span class="br">Hunters, demons and the Death God</span></div>
+        <p class="lede">665 demons. Six souls to win a duel. Everything to lose.</p>
+      </div>
+      <div class="facts">
+        <div class="fact"><span class="mono dim">Format</span><span class="v">Collectible card and dice duels</span></div>
+        <div class="fact"><span class="mono dim">Demons</span><span class="v">Exactly 665, across Ember, Blight, Rift, Bond and Grave</span></div>
+        <div class="fact"><span class="mono dim">Modes</span><span class="v">Traditional Duel and Last Stand</span></div>
+        <div class="fact"><span class="mono dim">Your Hunter</span><span class="v">Mortal, then Hazama, then Kamigoroshi, the God Killer</span></div>
+        <div class="fact"><span class="mono dim">Next</span><span class="v">The card game first, then manga, then anime. Live action one day.</span></div>
+        <div class="fact"><span class="mono dim">Status</span><span class="v">In development</span></div>
+      </div>
+    </div>
+    <div class="sec trio">
+      <article><span class="mono dim br">The contract</span><h3>Six souls wins the duel</h3><p>Capture six souls and the duel is yours. Collect 666 and the contract is complete. Every soul makes you stronger, and a little less human.</p></article>
+      <article><span class="mono dim br">The rivals</span><h3>Hunter against Hunter</h3><p>You are not the only one who made a deal. Other Hunters chase the same souls, and the flagship duel puts two of you face to face. If it ends level, the dice decide.</p></article>
+      <article><span class="mono dim br">The realms</span><h3>Five fractured realms</h3><p>Ember burns, Blight rots, Rift bends time, Bond binds and Grave remembers. Each realm fights differently, and its demons evolve from Fragments to Demi-Gods.</p></article>
+    </div>
+    <div class="sec split" id="updates-six">
+      <h2 class="h-sec">Hear when the hunt starts</h2>
+      <form class="signup" data-signup method="post" target="signup-sink" novalidate><label class="sr" for="em-six">Email address</label><div class="signup-row glass"><input id="em-six" name="email_address" type="email" placeholder="you@example.com" autocomplete="email" required><button type="submit">Notify me</button></div><div class="note mono" aria-live="polite"></div></form>
+    </div>
+  </div></div>
+</section>
+
+<!-- ================= SHOP ================= -->
+<section class="view" data-view="shop" data-palette="shop" hidden>
+  <div class="stage" style="grid-template-rows:1fr">
+    <div class="stage-center">
+      <div class="statement">
+        <span class="mono br dim">Shop</span>
+        <h1>Coming soon</h1>
+        <form class="signup" data-signup method="post" target="signup-sink" novalidate style="width:100%"><label class="sr" for="em-shop">Email address</label><div class="signup-row glass"><input id="em-shop" name="email_address" type="email" placeholder="you@example.com" autocomplete="email" required><button type="submit">Notify me</button></div><div class="note mono" aria-live="polite"></div></form>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STUDIO ================= -->
+<section class="view" data-view="studio" data-palette="studio" hidden>
+  <div class="stage" style="grid-template-rows:1fr auto">
+    <div class="stage-center">
+      <div class="statement">
+        <span class="mono br dim">Studio</span>
+        <h1>The studio</h1>
+        <p>Angry Bao is an independent worldbuilding studio. We build story-driven worlds, then everything that lives in them: games, collectibles and merch.</p>
+      </div>
+    </div>
+    <div class="scroll-hint mono"><span class="br">Scroll</span><i></i></div>
+  </div>
+  <div class="page"><div class="wrap">
+    <div class="sec split">
+      <h2 class="h-sec">What we make</h2>
+      <div class="body-copy">
+        <p><strong>Every world starts with a story.</strong> Dead of Knight, Evergreen and Triple Six are the first three, a run-and-slash game for mobile, a tactical tabletop RPG and a card and dice game. More worlds will follow.</p>
+        <p><strong>Then everything around them.</strong> Each world grows its own product lines: apparel, cards, collectibles, stories, and whatever the world needs next.</p>
+        <p><strong>Community first.</strong> We build in the open, test with real players and only ship what we would buy ourselves.</p>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="facts">
+        <div class="fact"><span class="mono dim">Based</span><span class="v">London, United Kingdom</span></div>
+        <div class="fact"><span class="mono dim">Worlds</span><span class="v">Dead of Knight, Evergreen, Triple Six, and more to come</span></div>
+        <div class="fact"><span class="mono dim">Making</span><span class="v">Games, collectibles, merch</span></div>
+      </div>
+    </div>
+    <div class="sec split">
+      <h2 class="h-sec">Stay in touch</h2>
+      <div class="body-copy" style="gap:22px">
+        <p>One email when there is something to see. For press, retail and collaborations, write to <a href="mailto:hello@angrybao.com">hello@angrybao.com</a>.</p>
+        <form class="signup" data-signup method="post" target="signup-sink" novalidate><label class="sr" for="em-studio">Email address</label><div class="signup-row glass"><input id="em-studio" name="email_address" type="email" placeholder="you@example.com" autocomplete="email" required><button type="submit">Join</button></div><div class="note mono" aria-live="polite"></div></form>
+      </div>
+    </div>
+  </div></div>
+</section>
+
+<!-- ================= JOURNAL ================= -->
+
+</main>
+
+<footer class="foot" id="foot" hidden>
+  <div class="wrap">
+    <svg viewBox="0 0 978 636" aria-hidden="true"><use href="#bao"/></svg>
+    <span class="mono">© 2026 Angry Bao · London, United Kingdom</span>
+    <nav class="mono"><a href="#worlds">Worlds</a><a href="#shop">Shop</a><a href="#studio">Studio</a></nav>
+  </div>
+</footer>
 
 <script>
 (function(){
   var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- time of day: the ground fades through night, sunrise, day and sunset on London time ---------- */
   var root=document.documentElement;
-  // ---- Themes. The page fades between these over 24 hours, London time. ----
   var TH={
     night:{ground:[7,6,8], S:[[120,6,22],[58,8,82],[10,30,66],[160,12,30],[34,28,36]], A:[.7,.4,.22], R:[.62,.5,.35],
       tint:[255,40,60], tk:.45, H:[.95,.8,.55,.35], logo:[7,6,7], leather:.32, scan:1, vig:.82,
@@ -203,136 +631,196 @@ body.intro .hero{transform:scale(.86)}
         var t=blend(TH[p[1]],TH[q[1]],k);
         // the logo flips cream -> black late in the dusk fade, so it never sits at a muddy grey for long
         if(p[1]!==q[1]&&(q[1]==='night'||p[1]==='night')){var lk=q[1]==='night'?Math.min(1,Math.max(0,(k-.55)/.3)):1-Math.min(1,Math.max(0,((1-k)-.55)/.3));
-          t.logo=mixA(TH[p[1]].logo,TH[q[1]].logo,lk)}
+          t.logo=mixA(TH[p[1]].logo,TH[q[1]].logo,lk);
+          // buttons flip at the same moment, so they never sit at a muddy half-way grey
+          var bk=lk<.5?0:1;
+          t.btn=mixA(TH[p[1]].btn,TH[q[1]].btn,bk);t.btnFg=mixA(TH[p[1]].btnFg,TH[q[1]].btnFg,bk);t.btnBd=L(TH[p[1]].btnBd,TH[q[1]].btnBd,bk)}
         return t}}
     return TH.night}
   function londonHour(){try{var p=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23'}).formatToParts(new Date());
     var g=function(n){return +(p.find(function(x){return x.type===n})||{value:0}).value};return g('hour')+g('minute')/60+g('second')/3600}catch(_){var d=new Date();return d.getUTCHours()+d.getUTCMinutes()/60}}
   function rgba(c,a){return 'rgba('+(c[0]|0)+','+(c[1]|0)+','+(c[2]|0)+','+a+')'}
   function rgb(c){return 'rgb('+(c[0]|0)+','+(c[1]|0)+','+(c[2]|0)+')'}
-  var override=null; // set to an hour (0-24) to pin a time of day for testing
-  var T=themeAt(londonHour());
-  var stops=document.querySelectorAll('#shM stop,#shW stop'), lastLogo='';
+  var override=null; // the tester slider pins an hour here (preview only)
+  var T=themeAt(londonHour()), lastLogo="";
   function applyUI(){
-    var l=rgb(T.logo);if(l!==lastLogo){lastLogo=l;for(var i=0;i<stops.length;i++)stops[i].setAttribute('stop-color',l)}
-    var st=root.style;
-    st.setProperty('--leather',T.leather.toFixed(3));st.setProperty('--scan',T.scan.toFixed(3));st.setProperty('--vig',T.vig.toFixed(3));
-    st.setProperty('--pill-bg',rgba(T.pill,T.pill[3].toFixed(3)));
-    st.setProperty('--btn-bg',rgb(T.btn));st.setProperty('--btn-fg',rgb(T.btnFg));st.setProperty('--btn-bd','rgba(233,220,203,'+T.btnBd.toFixed(3)+')');
-    st.setProperty('--dot',rgb(T.dot));st.setProperty('--dot-glow',rgba(T.dot,(T.scan*.9).toFixed(3)));
-    var meta=document.querySelector('meta[name=theme-color]');if(meta)meta.setAttribute('content',rgb(T.ground))}
+    var st=root.style, l=rgb(T.logo);
+    if(l!==lastLogo){lastLogo=l;st.setProperty("--logo",l)}
+    st.setProperty("--char",rgb(T.ground));
+    st.setProperty("--leather",T.leather.toFixed(3));st.setProperty("--scan",T.scan.toFixed(3));st.setProperty("--vig",T.vig.toFixed(3));
+    st.setProperty("--pill-bg",rgba(T.pill,T.pill[3].toFixed(3)));
+    st.setProperty("--btn-bg",rgb(T.btn));st.setProperty("--btn-fg",rgb(T.btnFg));st.setProperty("--btn-bd","rgba(233,220,203,"+T.btnBd.toFixed(3)+")");
+    var meta=document.querySelector("meta[name=theme-color]");if(meta)meta.setAttribute("content",rgb(T.ground))}
   function retheme(){T=themeAt(override!=null?override:londonHour());applyUI()}
   retheme();setInterval(function(){if(override==null)retheme()},20000);
-  // ---- Background ----
-  var cv=document.getElementById('bg'),cx=cv.getContext('2d'),W=96,H=60;cv.width=W;cv.height=H;
-  var m={x:.5,y:.4},s={x:.5,y:.4},live=false,t0=performance.now();
+  var PAL={}, target=null; // world pages share the same time-of-day ground
+
+  /* ---------- living ground on a tiny canvas, scaled up for free softness ---------- */
+  var cv = document.getElementById("bg"), cx = cv.getContext("2d");
+  var W = 96, H = 60; cv.width = W; cv.height = H;
+  var m = {x:.5, y:.4}, s = {x:.5, y:.4}, hasPointer = false, t0 = performance.now();
   function along(k){var S=T.S;k=((k%1)+1)%1;var f=k*S.length,i=Math.floor(f)%S.length,j=(i+1)%S.length;var e=f-Math.floor(f);e=e*e*(3-2*e);return mix(S[i],S[j],e)}
   function blob(x,y,r,c,a){var g=cx.createRadialGradient(x*W,y*H,0,x*W,y*H,r*W);g.addColorStop(0,rgba(c,a));g.addColorStop(1,rgba(c,0));cx.fillStyle=g;cx.fillRect(0,0,W,H)}
   function paint(){var x=s.x,y=s.y,A=T.A,R=T.R;cx.fillStyle=rgb(T.ground);cx.fillRect(0,0,W,H);
     blob(x,y,R[0],along(x*.8+y*.35),A[0]);blob(1-x*.7,1.05-y*.5,R[1],along(x*.8+y*.35+.4),A[1]);blob(.08+y*.25,.1+x*.15,R[2],along(y*.6+.7),A[2]);blob(.5,1.3,.85,mix(T.ground,[0,0,0],.4),.7)}
-  var eyes=document.getElementById('eyes'),mark=document.getElementById('mark');
+  /* halation: the logo glows with the background colour; at night it becomes a strong red outer glow */
+  var glowEls=[document.getElementById("heroMark"),document.querySelector(".hero-word")].filter(Boolean);
+  function halo(){var c=mix(along(s.x*.8+s.y*.35),T.tint,T.tk),H=T.H;
+    var f="drop-shadow(0 0 1.5px "+rgba(c,H[0].toFixed(3))+") drop-shadow(0 0 7px "+rgba(c,H[1].toFixed(3))+") drop-shadow(0 0 22px "+rgba(c,H[2].toFixed(3))+")"+(H[3]>.01?" drop-shadow(0 0 44px "+rgba(c,H[3].toFixed(3))+")":"");
+    for(var i=0;i<glowEls.length;i++)glowEls[i].style.filter=f}
   function frame(now){
-    if(!live){var t=(now-t0)/1000;m.x=.5+Math.sin(t*.13)*.32;m.y=.42+Math.cos(t*.1)*.24}
-    s.x+=(m.x-s.x)*.05;s.y+=(m.y-s.y)*.05;paint();
-    eyes.style.transform='translate('+((s.x-.5)*32).toFixed(1)+'px,'+((s.y-.5)*20).toFixed(1)+'px)';
-    requestAnimationFrame(frame)}
-  addEventListener('pointermove',function(e){if(e.pointerType==='touch')return;live=true;m.x=e.clientX/innerWidth;m.y=e.clientY/innerHeight},{passive:true});
-  addEventListener('pointerdown',function(e){live=true;m.x=e.clientX/innerWidth;m.y=e.clientY/innerHeight},{passive:true});
-  function blink(){mark.classList.add('blink');setTimeout(function(){mark.classList.remove('blink')},150);setTimeout(blink,3200+Math.random()*4200)}
-  paint();
-  // ---- Halation: the logo glows with the background colour; at night it becomes a strong red outer glow ----
-  var mk=document.getElementById('mark'),wd=document.querySelector('.word');
-  function halo(){
-    var c=mix(along(s.x*.8+s.y*.35),T.tint,T.tk),H=T.H;
-    var f='drop-shadow(0 0 1.5px '+rgba(c,H[0].toFixed(3))+') drop-shadow(0 0 7px '+rgba(c,H[1].toFixed(3))+') drop-shadow(0 0 22px '+rgba(c,H[2].toFixed(3))+')'+(H[3]>.01?' drop-shadow(0 0 44px '+rgba(c,H[3].toFixed(3))+')':'');
-    mk.style.filter=f; wd.style.filter=f;
-    requestAnimationFrame(halo)}
-  if(!reduce){requestAnimationFrame(halo);requestAnimationFrame(frame);setTimeout(blink,2600)}
-  else {var c0=mix(along(.6),T.tint,T.tk);mk.style.filter=wd.style.filter='drop-shadow(0 0 8px '+rgba(c0,T.H[1])+')'}
-  // Phone tilt: on phones with motion sensors, tilting the phone moves the light the way the cursor does.
-  var base=null;
-  function onTilt(e){
-    if(e.gamma==null||e.beta==null) return;
-    var ang=(screen.orientation&&screen.orientation.angle)||window.orientation||0;
-    var lr=e.gamma, fb=e.beta;
-    if(ang===90){lr=e.beta;fb=-e.gamma} else if(ang===-90||ang===270){lr=-e.beta;fb=e.gamma}
-    if(!base) base={lr:lr,fb:fb};
-    base.lr+=(lr-base.lr)*.004; base.fb+=(fb-base.fb)*.004;   // slowly re-centre on how the phone is held
-    var gx=Math.max(-1,Math.min(1,(lr-base.lr)/25)), gy=Math.max(-1,Math.min(1,(fb-base.fb)/25));
-    live=true; m.x=.5+gx*.5; m.y=.5+gy*.5;
+    if(!hasPointer){ var t=(now-t0)/1000; m.x=.5+Math.sin(t*.13)*.32; m.y=.42+Math.cos(t*.1)*.24 }
+    s.x+=(m.x-s.x)*.05; s.y+=(m.y-s.y)*.05;
+    paint(); halo(); tiltAndEyes(); requestAnimationFrame(frame);
   }
-  function startTilt(){ addEventListener('deviceorientation',onTilt,{passive:true}) }
-  if(!reduce && window.DeviceOrientationEvent && matchMedia('(pointer: coarse)').matches){
-    startTilt();
-    // iPhone only shares tilt after the visitor allows it, and can only ask after a tap,
-    // so the first tap anywhere on the page (outside the sign-up form) asks once.
-    if(typeof DeviceOrientationEvent.requestPermission==='function'){
-      var asked=false;
-      addEventListener('touchend',function ask(e){
-        if(asked || base || (e.target.closest && e.target.closest('form'))) return;
-        asked=true; removeEventListener('touchend',ask);
-        DeviceOrientationEvent.requestPermission().catch(function(){});
-      },{passive:true});
-    }
-  }
+  addEventListener('pointermove',function(e){
+    if(e.pointerType==='touch') return;
+    hasPointer=true; m.x=e.clientX/innerWidth; m.y=e.clientY/innerHeight;
+  },{passive:true});
+  addEventListener('pointerdown',function(e){ if(e.pointerType==='touch'){ hasPointer=true; m.x=e.clientX/innerWidth; m.y=e.clientY/innerHeight } },{passive:true});
 
-  // ---- Intro: tap to enter, rise above the steamer, lift the lid, choose a bao ----
-  (function(){
-    var I=document.getElementById('intro'); if(!I) return;
-    var btn=I.querySelector('.enter'), zoom=I.querySelector('.zoom'), buns=I.querySelectorAll('.bun'), sv=I.querySelectorAll('svg');
-    var D=reduce?0:1, started=false, picked=false;
-    function glow(){ if(!I.isConnected) return; var f=mk.style.filter; for(var i=0;i<sv.length;i++) sv[i].style.filter=f; I.style.setProperty('--ink',lastLogo||'#EFE2D0'); requestAnimationFrame(glow) }
-    requestAnimationFrame(glow);
-    function enter(){
-      if(started) return; started=true;
-      // The tap is the moment iPhone allows us to ask for motion, so ask here.
-      try{ if(window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission==='function'){ asked=true; DeviceOrientationEvent.requestPermission().catch(function(){}) } }catch(_){}
-      I.classList.add('up');
-      setTimeout(function(){ I.classList.add('open') }, 1500*D);
-      setTimeout(spin, 2500*D);
-    }
-    btn.addEventListener('click',enter);
-    I.querySelector('.side').addEventListener('click',enter);
-    I.querySelector('.side').style.cursor='pointer';
-    // Highlight one bao at a time, slowing down like a roulette, then open the page on a random one.
-    function spin(){
-      I.classList.add('choose');
-      var pick=Math.floor(Math.random()*3), order=[0,2,1], steps=7+((order.indexOf(pick)-7%3+3)%3), k=0, delay=90;
-      if(!D){ land(buns[pick]); return }
-      (function step(){
-        Array.prototype.forEach.call(buns,function(o){o.classList.remove('on')});
-        var b=buns[order[k%3]]; b.classList.add('on');
-        if(k>=steps){ setTimeout(function(){ land(b) }, 520); return }
-        k++; delay*=1.22; setTimeout(step, delay);
-      })();
-    }
-    function land(b){
-      picked=true;
-      var c=b.querySelector('circle'), x=+c.getAttribute('cx'), y=+c.getAttribute('cy');
-      I.classList.add('picked');
-      zoom.style.transformOrigin=x+'px '+y+'px'; zoom.style.transform='scale(5)';
-      setTimeout(function(){ document.body.classList.remove('intro'); I.classList.add('gone') }, 650*D);
-      setTimeout(function(){ I.remove() }, 1700*D+50);
-    }
-    // Escape or Enter on the keyboard skips straight in
-    addEventListener('keydown',function k(e){ if(e.key==='Escape'){ removeEventListener('keydown',k); document.body.classList.remove('intro'); I.classList.add('gone'); setTimeout(function(){I.remove()},1000) } });
-  })();
-  // Email sign-up. Set SIGNUP_URL to the mailing-list provider's form address to start collecting.
-  var SIGNUP_URL = '';
-  var f=document.getElementById('signup'), note=document.getElementById('signup-note'), em=document.getElementById('signup-email');
-  f.addEventListener('submit',function(e){
-    if(!em.value || !em.checkValidity()){ e.preventDefault(); note.textContent='Please enter a valid email address.'; em.focus(); return }
-    if(!SIGNUP_URL){ e.preventDefault(); note.textContent='Sign-ups open very soon. Please check back.'; return }
-    f.action=SIGNUP_URL;
-    setTimeout(function(){ f.classList.add('done'); note.textContent='Thanks. You will hear from us when we launch.' },300);
+  /* ---------- the bao watches you; world emblems tilt ---------- */
+  var eyes = document.getElementById('eyes'), mark = document.getElementById('heroMark');
+  function tiltAndEyes(){
+    var dx = (s.x-.5)*2, dy = (s.y-.5)*2;
+    if(eyes && !document.querySelector('[data-view="home"]').hidden){ eyes.style.transform='translate('+(dx*16).toFixed(1)+'px,'+(dy*10).toFixed(1)+'px)' }
+    var em = document.querySelector('.view:not([hidden]) .tilt');
+    if(em) em.style.transform='rotateY('+(dx*16).toFixed(2)+'deg) rotateX('+(-dy*12).toFixed(2)+'deg)';
+  }
+  function blink(){
+    if(!reduce && mark){ mark.classList.add('blink'); setTimeout(function(){mark.classList.remove('blink')},150) }
+    setTimeout(blink, 3200 + Math.random()*4200);
+  }
+  setTimeout(blink, 2600);
+
+  /* ---------- home card: hover a world to preview it ---------- */
+  var INFO = {
+    home:{title:'Angry Bao',text:'Angry Bao is an independent worldbuilding studio. We build story-driven worlds, then make games, collectibles and merch from them.',rows:[['Worlds','3 so far'],['Making','Games · Collectibles · Merch']],tag:'Now building',cta:'Be first in',val:'Free',href:'#shop'},
+    dok:{title:'Dead of Knight',text:'The dead are rising. One knight charges into the dark to buy the living time. One day they will sing songs about you.',rows:[['Format','Run-and-slash'],['Platform','Mobile']],tag:'Our first title',cta:'Enter world',val:'01 / 03',href:'#dead-of-knight'},
+    ever:{title:'Evergreen',text:'Soldiers hold a collapsing galaxy against the Void, a horrifying force that erases memory and identity.',rows:[['Format','Tabletop RPG'],['Domains','Land · Air · Space']],tag:'In development',cta:'Enter world',val:'02 / 03',href:'#evergreen'},
+    six:{title:'Triple Six',text:'You lost the one you love. Collect 666 souls and you can have them back. Hunt demons, face rival Hunters, and try not to lose yourself.',rows:[['Format','Card & dice'],['Next','Manga · Anime']],tag:'In development',cta:'Enter world',val:'03 / 03',href:'#triple-six'}
+  };
+  var card = document.getElementById('homeCard'), shown = null, swapTimer;
+  function fillCard(key){
+    var d = INFO[key], q = function(f){return card.querySelector('[data-f="'+f+'"]')};
+    q('title').textContent=d.title; q('text').textContent=d.text; q('tag').textContent=d.tag;
+    q('ctaLabel').textContent=d.cta; q('ctaVal').textContent=d.val; q('cta').setAttribute('href',d.href);
+    var rows=q('rows'); rows.innerHTML='';
+    d.rows.forEach(function(r){var el=document.createElement('div');el.className='row';el.innerHTML='<span class="k"></span><span class="br"></span>';el.children[0].textContent=r[0];el.children[1].textContent=r[1];rows.appendChild(el)});
+  }
+  function preview(key){
+    if(key===shown) return; shown=key;
+    target = PAL[key] || PAL.home;
+    document.querySelectorAll('[data-strip] .thumb').forEach(function(t){t.classList.toggle('on',t.dataset.preview===key)});
+    if(mark) mark.classList.toggle('squint', key!=='home');
+    var parts = card.querySelectorAll('.swap');
+    if(reduce){ fillCard(key); return }
+    parts.forEach(function(p){p.classList.add('out')});
+    clearTimeout(swapTimer);
+    swapTimer=setTimeout(function(){ fillCard(key); parts.forEach(function(p){p.classList.remove('out')}) },200);
+  }
+  fillCard('home'); shown='home';
+  // keep the card one fixed height (the tallest world's text), so hovering worlds never shifts the logo above it
+  var cardBody = card.querySelector('.card-body');
+  function lockCard(){
+    cardBody.style.minHeight=''; var h=0, keep=shown||'home';
+    Object.keys(INFO).forEach(function(k){ fillCard(k); h=Math.max(h,cardBody.offsetHeight) });
+    fillCard(keep); cardBody.style.minHeight=h+'px';
+  }
+  lockCard(); addEventListener('resize',function(){ clearTimeout(lockCard.t); lockCard.t=setTimeout(lockCard,150) });
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(lockCard);
+  /* show the card only while an icon is hovered; a tap or click pins it until you tap elsewhere */
+  var pinned = null, hideTimer;
+  function openCard(key){ clearTimeout(hideTimer); if(!card.classList.contains('show')){ shown=key; fillCard(key); card.classList.add('show') } preview(key);
+    document.querySelectorAll('[data-strip] .thumb').forEach(function(t){t.classList.toggle('on',t.dataset.preview===key)}) }
+  function closeCard(){ if(pinned) return; clearTimeout(hideTimer); hideTimer=setTimeout(function(){ card.classList.remove('show');
+    document.querySelectorAll('[data-strip] .thumb').forEach(function(t){t.classList.toggle('on',t.dataset.preview==='home')}); if(mark) mark.classList.remove('squint') },120) }
+  document.querySelectorAll('[data-strip] [data-preview]').forEach(function(a){
+    a.addEventListener('pointerenter',function(e){ if(e.pointerType!=='touch') openCard(a.dataset.preview) });
+    a.addEventListener('pointerleave',function(e){ if(e.pointerType!=='touch') closeCard() });
+    a.addEventListener('focus',function(){ openCard(a.dataset.preview) });
+    a.addEventListener('blur',function(){ closeCard() });
+    a.addEventListener('click',function(e){
+      var k=a.dataset.preview;
+      // first tap on a phone (or a click on the bao) pins the card; tapping the same icon again goes to that world
+      if(k==='home' || (pinned!==k && matchMedia('(hover: none)').matches)){ e.preventDefault(); pinned=k; openCard(k) }
+    });
   });
-  var c=document.getElementById('clock');
-  function tick(){try{var d=new Date();
-    var t=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit'}).format(d);
-    var z=(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',timeZoneName:'short'}).formatToParts(d).find(function(p){return p.type==='timeZoneName'})||{}).value||'';
-    c.textContent=t+' '+z}catch(_){}}
-  tick();setInterval(tick,15000);
+  card.addEventListener('pointerenter',function(){ clearTimeout(hideTimer) });
+  card.addEventListener('pointerleave',function(e){ if(e.pointerType!=='touch') closeCard() });
+  document.addEventListener('pointerdown',function(e){ if(pinned && !e.target.closest('#homeCard,[data-strip]')){ pinned=null; closeCard() } });
+  document.querySelectorAll('.index [data-preview]').forEach(function(a){
+    a.addEventListener('pointerenter',function(e){ if(e.pointerType!=='touch') target=PAL[a.dataset.preview] });
+    a.addEventListener('focus',function(){ target=PAL[a.dataset.preview] });
+  });
+  var idx = document.querySelector('.index');
+  idx.addEventListener('pointerleave',function(){ target=PAL.home });
+
+  /* ---------- hash routing with a soft dissolve ---------- */
+  var main = document.getElementById('main'), foot = document.getElementById('foot');
+  var views = {}; document.querySelectorAll('.view').forEach(function(v){views[v.dataset.view]=v});
+  var current = null;
+  function show(name, instant){
+    var v = views[name] || views.home; name = v.dataset.view;
+    if(name===current) return;
+    function swap(){
+      Object.keys(views).forEach(function(k){views[k].hidden = (k!==name)});
+      foot.hidden = (name==='home' || name==='worlds' || name==='shop');
+      target = PAL[v.dataset.palette] || PAL.home;
+      if(name==='home'){ shown=null; preview('home'); pinned=null; card.classList.remove('show'); if(mark) mark.classList.remove('squint') }
+      document.querySelectorAll('.nav-pill a').forEach(function(a){
+        var h=a.getAttribute('href').slice(1);
+        var on = h===name || (h==='worlds' && /^(dead-of-knight|evergreen|triple-six)$/.test(name));
+        if(on) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current');
+      });
+      document.title = name==='home' ? 'Angry Bao' : (v.querySelector('h1') ? v.querySelector('h1').textContent.trim()+' · Angry Bao' : 'Angry Bao');
+      scrollTo(0,0); current=name;
+    }
+    if(instant || reduce || current===null){ swap(); return }
+    main.classList.add('leaving');
+    setTimeout(function(){ swap(); requestAnimationFrame(function(){ main.classList.remove('leaving') }) }, 380);
+  }
+  function route(){
+    var h = location.hash.slice(1);
+    if(!h || views[h]) { show(h||'home'); return }
+    // an in-page anchor such as #updates-dok
+    var el = document.getElementById(h);
+    if(el){ var host = el.closest('.view'); if(host && host.hidden) show(host.dataset.view, true); el.scrollIntoView({behavior: reduce?'auto':'smooth', block: el.closest('.lines')?'center':'start'}); if(el.closest('.lines')){ el.classList.remove('flash'); void el.offsetWidth; el.classList.add('flash') } }
+  }
+  addEventListener('hashchange', route);
+  document.querySelectorAll('[data-jump]').forEach(function(a){
+    a.addEventListener('click',function(e){ e.preventDefault(); var el=document.querySelector(a.getAttribute('href')); if(el) el.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'}); var i=el&&el.querySelector('input'); if(i) setTimeout(function(){i.focus({preventScroll:true})},500) });
+  });
+  route();
+
+  /* ---------- sign-up: Kit form, double opt-in ---------- */
+  var SIGNUP_URL='https://app.kit.com/forms/10214414/subscriptions';
+  document.querySelectorAll('[data-signup]').forEach(function(f){
+    var em=f.querySelector('input[type=email]'), note=f.querySelector('.note');
+    f.addEventListener('submit',function(e){
+      if(!em.value||!em.checkValidity()){ e.preventDefault(); note.textContent='Please enter a valid email address.'; em.focus(); return }
+      f.action=SIGNUP_URL;
+      setTimeout(function(){ f.classList.add('done'); note.textContent='Thanks. Check your inbox to confirm.'; em.value='' },300);
+    });
+  });
+
+  /* ---------- London clock ---------- */
+  var clock = document.getElementById('clock');
+  function tickClock(){
+    try{
+      var d=new Date();
+      var t=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit'}).format(d);
+      var z=(new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/London',timeZoneName:'short'}).formatToParts(d).find(function(p){return p.type==='timeZoneName'})||{}).value||'';
+      clock.textContent=t+' '+z;
+    }catch(_){ clock.textContent='' }
+  }
+  tickClock(); setInterval(tickClock, 15000);
+
+  paint(); halo();
+  if(reduce){ s.x=.5; s.y=.4; paint(); halo(); tiltAndEyes(); setInterval(function(){ paint(); halo() }, 20000) }
+  else requestAnimationFrame(frame);
 })();
 </script>
-</body>
-</html>
+
+<iframe name="signup-sink" title="Sign-up" hidden></iframe>
+</body></html>
