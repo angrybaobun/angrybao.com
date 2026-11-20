@@ -723,7 +723,33 @@ main.leaving{opacity:0;filter:blur(10px)}
     if(e.pointerType==='touch') return;
     hasPointer=true; m.x=e.clientX/innerWidth; m.y=e.clientY/innerHeight;
   },{passive:true});
-  addEventListener('pointerdown',function(e){ if(e.pointerType==='touch'){ hasPointer=true; m.x=e.clientX/innerWidth; m.y=e.clientY/innerHeight } },{passive:true});
+  addEventListener('pointerdown',function(e){ if(e.pointerType==='touch' && !base){ hasPointer=true; m.x=e.clientX/innerWidth; m.y=e.clientY/innerHeight } },{passive:true});
+  // Phone tilt: on phones with motion sensors, tilting the phone moves the light the way the cursor does.
+  var base=null;
+  function onTilt(e){
+    if(e.gamma==null||e.beta==null) return;
+    var ang=(screen.orientation&&screen.orientation.angle)||window.orientation||0;
+    var lr=e.gamma, fb=e.beta;
+    if(ang===90){lr=e.beta;fb=-e.gamma} else if(ang===-90||ang===270){lr=-e.beta;fb=e.gamma}
+    if(!base) base={lr:lr,fb:fb};
+    base.lr+=(lr-base.lr)*.004; base.fb+=(fb-base.fb)*.004;   // slowly re-centre on how the phone is held
+    var gx=Math.max(-1,Math.min(1,(lr-base.lr)/25)), gy=Math.max(-1,Math.min(1,(fb-base.fb)/25));
+    hasPointer=true; m.x=.5+gx*.5; m.y=.5+gy*.5;
+  }
+  function startTilt(){ addEventListener('deviceorientation',onTilt,{passive:true}) }
+  if(!reduce && window.DeviceOrientationEvent && matchMedia('(pointer: coarse)').matches){
+    startTilt();
+    // iPhone only shares tilt after the visitor allows it, and can only ask after a tap,
+    // so the first tap anywhere on the page (outside the sign-up form) asks once.
+    if(typeof DeviceOrientationEvent.requestPermission==='function'){
+      var asked=false;
+      addEventListener('touchend',function ask(e){
+        if(asked || base || (e.target.closest && e.target.closest('form'))) return;
+        asked=true; removeEventListener('touchend',ask);
+        DeviceOrientationEvent.requestPermission().catch(function(){});
+      },{passive:true});
+    }
+  }
 
   /* ---------- the bao watches you; world emblems tilt ---------- */
   var eyes = document.getElementById('eyes'), mark = document.getElementById('heroMark');
@@ -851,6 +877,8 @@ main.leaving{opacity:0;filter:blur(10px)}
     function enter(){
       if(started) return; started=true;
       // The tap is the moment iPhone allows us to ask for motion, so ask here.
+      // The tap is the moment iPhone allows us to ask for motion, so ask here.
+      try{ if(!asked && window.DeviceOrientationEvent && typeof DeviceOrientationEvent.requestPermission==='function'){ asked=true; DeviceOrientationEvent.requestPermission().catch(function(){}) } }catch(_){}
       I.classList.add('up');
       setTimeout(function(){ I.classList.add('open') }, 1500*D);
       setTimeout(spin, 2500*D);
